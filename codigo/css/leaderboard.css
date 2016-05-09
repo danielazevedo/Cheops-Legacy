@@ -1,0 +1,53 @@
+body{
+    background: url("../imagens/entrada.jpg") no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+
+
+}
+
+.points:before{
+    content: " ---------------------------- ";
+}
+nav{
+
+    width: 40%;
+    height: 50%;
+    text-align: center;
+    margin: auto;
+    margin-top: 2%;
+    position: absolute;
+    top: 25%;
+    left: 30%;
+
+
+}
+
+
+p{
+    font-size: 4vh;
+    margin: inherit;
+    display: inline;
+}
+
+header{
+    margin-top: 5%;
+    text-align: center;
+    font-size: 10vh;
+    font-style: bold;
+}
+
+button{
+
+    margin-left: 10vh;
+    float: left;
+    margin-top: 70vh;
+    width: 7%;
+    height: 5vh;
+    background: url("../imagens/azul.png") no-repeat center;
+    background-size: 100% 100%;
+    border: 0;
+    cursor: pointer;
+}

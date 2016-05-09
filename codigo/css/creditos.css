@@ -1,0 +1,52 @@
+body{
+
+
+	background: url("../imagens/entrada.jpg") no-repeat center center fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+
+}
+
+header,nav{
+	text-align: center;
+	color: #000000;
+
+}
+header
+{
+
+	font-size: 10vh;
+
+
+}
+
+nav{
+	margin-top: 7%;
+	font-size: 3vh;
+
+
+}
+
+nav p{
+
+	font-size: 110%;
+}
+
+nav p.first{
+	font-size: 210%;
+}
+
+button{
+	font-style: bold;
+	margin-left: 10%;
+	float: left;
+	margin-top: 8%;
+	width: 7%;
+	height: 5vh;
+	background: url("../imagens/azul.png") no-repeat center;
+	background-size: 100% 100%;
+	border: 0;
+	cursor: pointer;
+}

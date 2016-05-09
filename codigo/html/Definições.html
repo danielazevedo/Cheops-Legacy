@@ -1,0 +1,35 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Definicoes</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="../css/definicoes.css">
+    <script type="text/javascript" src="../js/definicoes.js"></script>
+
+   	</head>
+   	<header>Definições</header>
+   	<body>
+	<nav>
+		<button id="menos"></button>
+		<p id="volume"></p>
+		<button id="mais"></button>
+		<audio autoplay loop>
+			<source src="../audio/musica1.mp4">
+		</audio>
+	</nav>
+	<select id="select" onchange="changeMusic()">
+
+	    <option selected="selected" disabled="disabled">Escolha a musica</option>
+	    <option>Musica 1</option>
+	    <option>Musica 2</option>
+	    <option>Musica 3</option>
+	    <option>Musica 4</option>
+	</select>
+	<article>
+	<button id="setas1"></button>
+	<button id="setas2"></button>
+	</article>
+	<button id="back">Back</button>
+	</body>
+</html>
