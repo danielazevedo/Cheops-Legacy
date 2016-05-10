@@ -39,6 +39,7 @@ class Jogador{
         this.n_vidas=vidas;
         this.tempo_restante=tempo_restante;
         this.estado=estado;
+        this.n_fila=-1;
     }
 
     draw (ctx, width, height,imagem){
@@ -57,7 +58,7 @@ class Personagem{
 
     //desenha soldado temporário amarelo
     draw(ctx, soldado_width, soldado_height,imagem){
-        //ctx.fillStyle="#FF0000";
+
         ctx.drawImage(imagem,this.x,this.y,soldado_width,soldado_height);
 
     }
@@ -87,10 +88,9 @@ class Fila{
     }
 
     //desenha os soldados da fila
-    draw(ctx,soldados_width,soldados_heigth,jogador){
+    draw(ctx,soldados_width,soldados_heigth,jogador,indice ){
         var img = new Image();
         img.id = "imagem";
-        img.src = "../imagens/up/up1.png";
         var countUp=0, countLeft=0, countRight=0, countDown=0;
 
 
@@ -100,45 +100,50 @@ class Fila{
 
             //up
             if(this.soldados[atual].x == this.soldados[proximo].x && this.soldados[atual].y > this.soldados[proximo].y){
-                if(countUp+1==9)
+                countUp++;
+                if(countUp==9)
                     countUp=1;
                 else
-                    countUp=mod(countUp+1,9)+1;
+                    countUp=mod(countUp,9);
                 img.src = "../imagens/up/up"+ countUp+".png";
                 countDown = 0, countLeft = 0, countRight = 0;
             }
             //down
             else if(this.soldados[atual].x == this.soldados[proximo].x && this.soldados[atual].y < this.soldados[proximo].y){
-                if(countDown+1==9)
+                countDown++;
+                if(countDown==9)
                     countDown=1;
                 else
-                    countDown=mod(countDown+1,9)+1;
+                    countDown=mod(countDown,9);
                 img.src = "../imagens/down/down"+ countDown+".png";
                 countUp = 0, countLeft = 0, countRight = 0;
             }
             //right
             else if(this.soldados[atual].x < this.soldados[proximo].x && this.soldados[atual].y == this.soldados[proximo].y){
-                if(countRight+1==9)
+                countRight++;
+                if(countRight==9)
                     countRight=1;
                 else
-                    countRight=mod(countRight+1,9)+1;
+                    countRight=mod(countRight,9);
                 img.src = "../imagens/right/right"+ countRight+".png";
                 countDown = 0, countLeft = 0, countUp = 0;
             }
             //left
-            if(this.soldados[atual].x > this.soldados[proximo].x && this.soldados[atual].y == this.soldados[proximo].y){
-                if(countLeft+1==9)
+            else if(this.soldados[atual].x > this.soldados[proximo].x && this.soldados[atual].y == this.soldados[proximo].y){
+                countLeft++;
+                if(countLeft==9)
                     countLeft=1;
                 else
-                    countLeft=mod(countLeft+1,9)+1;
+                    countLeft=mod(countLeft,9);
                 img.src = "../imagens/left/left"+ countLeft+".png";
                 countDown = 0, countUp = 0, countRight = 0;
             }
 
+
             this.soldados[mod((this.primeira_posicao-i),this.soldados.length)].draw(ctx,soldados_width,soldados_heigth,img);
 
         }
-        if(jogador.estado==1){
+        if(jogador.estado==1 && indice == jogador.n_fila){
             jogador.personagem.setPosicao(this.soldados[mod((this.primeira_posicao-this.tamanho+1),this.soldados.length)].x,this.soldados[mod((this.primeira_posicao-this.tamanho+1),this.soldados.length)].y);
         }
     }
@@ -205,21 +210,20 @@ class Cenario{
     //apaga o ultimo elemento do fila e desenha o proximo movimento da fila
     movimenta_soldados(ctx,soldados_width, soldados_heigth,jogador){
 
+        var cw = ctx.canvas.width;
+        var ch = ctx.canvas.height;
 
+        //apagar canvas
+        ctx.clearRect(0, 0, cw, ch);
         for (let j=0; j<this.filas.length;j++){
             var fila= this.filas[j];
 
             //ultima posicao no array
             var last= mod(fila.primeira_posicao-fila.tamanho+1,fila.soldados.length);
 
-            var cw = ctx.canvas.width;
-            var ch = ctx.canvas.height;
-
-            //apagar canvas
-            ctx.clearRect(0, 0, cw, ch);
 
             fila.atualizaPosicao();
-            fila.draw(ctx,soldados_width,soldados_heigth,jogador);
+            fila.draw(ctx,soldados_width,soldados_heigth,jogador,j);
         }
 
     }

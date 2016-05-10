@@ -7,12 +7,42 @@
 (function()
 {
     //automatically called as soon as the javascript is loaded
+
     window.addEventListener("load", main);
 }());
 
 var countUp = 0, countLeft = 0, countRight = 0, countDown = 0;
 
 function main() {
+
+    //carregar as imagens
+    var imagens1= [];
+    var imagens2= [];
+    var imagens3= [];
+    var imagens4= [];
+
+    for(let i=0;i<9;i++){
+        var imagem1 = new Image();
+        var imagem2 = new Image();
+        var imagem3 = new Image();
+        var imagem4 = new Image();
+
+
+        imagem1.src = "../imagens/up/up" + i + ".png";
+        imagem2.src = "../imagens/right/right" + i + ".png";
+        imagem3.src = "../imagens/left/left" + i + ".png";
+        imagem4.src = "../imagens/down/down" + i + ".png";
+
+        imagens1[i] = imagem1;
+        imagens2[i] = imagem2;
+        imagens3[i] = imagem3;
+        imagens4[i] = imagem4;
+
+
+    }
+    var imagens=[imagens1,imagens2,imagens3,imagens4];
+
+
     var c = document.getElementById("Canvas");
     var ctx = c.getContext("2d");
 
@@ -27,30 +57,43 @@ function main() {
 
     var mapa = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
     var filas = [
-        [[3, 0], [90, 0], [90, 30], [90, 60], [120, 60], [150, 60], [180, 60], [210, 60], [210, 30], [210, 0], [180, 0], [150, 0], [120, 0]]
+        [[3, 0], [90, 0], [90, 30], [90, 60], [120, 60], [150, 60], [180, 60], [210, 60], [210, 30], [210, 0], [180, 0], [150, 0], [120, 0]],
+
+        [[3, 0],  [360, 0], [360, 30], [360, 60], [330, 60], [300, 60], [270, 60], [240, 60], [240, 30], [240, 0],[270, 0], [300, 0], [330, 0]],
+
     ];
+
     var cenario = new Cenario(0, 0, mapa);
     var jogador = new Jogador(0, 0, 3, "teste", 0, 0);
-    cenario.iniciaCenario(ctx, div_x, div_y, mapa_x, mapa_y, soldado_width, soldado_height, filas, jogador);
+    cenario.iniciaCenario(ctx, div_x, div_y, mapa_x, mapa_y, soldado_width, soldado_height, filas, jogador, imagens);
 
     var img = new Image();
-    img.id = "imagem";
-    img.src = "../imagens/up/up1.png";
-    jogador.draw(ctxJogador, soldado_width, soldado_height, img);
+    img.src = "../imagens/right/right0.png";
+    img.onload = function () {
+        jogador.draw(ctxJogador, soldado_width, soldado_height, img);
+    }
+
+    var pressed = false;
+    document.onkeydown = function (ev) {
+        if(pressed) return;
+        pressed = true;
+        keyHandler(ev);
+
+        // your magic code here
+    };
+
+    document.onkeyup = function () {
+        pressed = false;
+    };
 
 
-    document.onkeydown = keyHandler;
 
     function keyHandler(ev) {
         var key = ev.keyCode;
         var x = jogador.personagem.x;
         var y = jogador.personagem.y;
 
-        //sair da fila
-        if (jogador.estado == 1) {
-            jogador.estado = 0;
-            cenario.filas[0].tamanho--;
-        }
+
 
         var dir = "right";
         var jogador_width = soldado_width;
@@ -103,9 +146,21 @@ function main() {
 
         }
 
-        var res = verifica_colisoes(x, y, cenario.filas[0]);
-        if (res == 0) {
-            verifica_posicao(jogador, x, y, cenario.filas[0]);
+        //sair da fila
+        if (jogador.estado == 1) {
+            jogador.estado = 0;
+            cenario.filas[jogador.n_fila].tamanho--;
+            jogador.n_fila=-1;
+            verifica_posicao(jogador, x, y, cenario.filas);
+            cenario.movimenta_soldados(ctx,soldado_width,soldado_height,jogador);
+
+
+        }
+
+        //var res = verifica_colisoes(x, y, cenario.filas[0]);
+
+            verifica_posicao(jogador, x, y, cenario.filas);
+
 
             //atualizar posicao do jogador
             jogador.personagem.setPosicao(x, y);
@@ -113,34 +168,30 @@ function main() {
 
             var cw = ctxJogador.canvas.width;
             var ch = ctxJogador.canvas.height;
-            var img = new Image();
-            img.id = "imagem";
+
             //apagar canvas
             ctxJogador.clearRect(0, 0, cw, ch);
 
             if (jogador.estado == 0) {
                 switch (dir) {
                     case "up":
-                        img.src = "../imagens/up/up" + countUp + ".png";
-                        jogador.draw(ctxJogador, soldado_width, soldado_height, img);
+                        jogador.draw(ctxJogador, soldado_width, soldado_height, imagens[0][countUp]);
                         break;
                     case "left":
-                        img.src = "../imagens/left/left" + countLeft + ".png";
-                        jogador.draw(ctxJogador, soldado_width, soldado_height, img);
+                        jogador.draw(ctxJogador, soldado_width, soldado_height, imagens[2][countLeft]);
                         break;
                     case "down":
-                        img.src = "../imagens/down/down" + countDown + ".png";
-                        jogador.draw(ctxJogador, soldado_width, soldado_height, img);
+                        jogador.draw(ctxJogador, soldado_width, soldado_height, imagens[3][countDown]);
                         break;
                     case "right":
-                        img.src = "../imagens/right/right" + countRight + ".png";
-                        jogador.draw(ctxJogador, soldado_width, soldado_height, img);
+                        jogador.draw(ctxJogador, soldado_width, soldado_height, imagens[1][countRight]);
                         break;
 
                 }
+
             }
 
-        }
+
 
 
     }
@@ -155,15 +206,22 @@ function verifica_colisoes(x,y,fila){
     return 0;
 }
 
-function verifica_posicao(jogador,x,y,fila){
-    var last_mais1= mod(fila.primeira_posicao-fila.tamanho,fila.soldados.length);
-    if(fila.soldados[last_mais1].x == x && fila.soldados[last_mais1].y == y ){
-        console.log("entrou");
-        fila.tamanho++;
-        jogador.estado=1;
+function verifica_posicao(jogador,x,y,filas){
 
+    for(let i=0;i<filas.length;i++) {
+
+        var fila= filas[i];
+        var last_mais1 = mod(fila.primeira_posicao - fila.tamanho, fila.soldados.length);
+
+        if (fila.soldados[last_mais1].x == x && fila.soldados[last_mais1].y == y) {
+            console.log("entrou");
+            if(jogador.estado==0)
+                fila.tamanho++;
+            jogador.estado = 1;
+            jogador.n_fila=i;
+
+        }
     }
-
 }
 
 function  mod(n, m) {
