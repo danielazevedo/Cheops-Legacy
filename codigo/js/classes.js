@@ -46,6 +46,43 @@ class Jogador{
         this.personagem.draw(ctx,width,height,imagem);
     }
 
+    nextLevel(nivel){
+        nivel++;
+        document.cookie = "nivel=" + nivel;
+        document.cookie = "n_vidas=" + this.n_vidas;
+        location.href = "../html/MotorDeJogo.html";
+    }
+
+    restartLevel(nivel){
+
+        this.n_vidas--;
+        document.cookie = "nivel=" + nivel;
+        document.cookie = "n_vidas=" + this.n_vidas;
+        location.href = "../html/MotorDeJogo.html";
+
+    }
+
+    GameOver(nivel){
+/*
+        document.body.style.background = "url(../imagens/game_over.jpg) no-repeat center center fixed";
+        document.body.style.backgroundSize = "100% 100%";*/
+        setInterval(function(){
+            document.cookie = "nivel=" + nivel;
+            document.cookie = "n_vidas = 3";
+            location.href = "../html/Main.html";
+        },2000);
+
+    }
+
+    restart(nivel){
+        if(this.n_vidas == 1){
+            this.GameOver(nivel);
+        }
+        else{
+            this.restartLevel(nivel);
+        }
+    }
+
 }
 
 
@@ -62,11 +99,7 @@ class Personagem{
         ctx.drawImage(imagem,this.x,this.y,soldado_width,soldado_height);
 
     }
-    clear(ctx, soldado_width, soldado_height){
-        ctx.fillStyle="#00FFFF";
-        ctx.fillRect(this.x,this.y,soldado_width,soldado_height);
 
-    }
     setPosicao(x,y){
         this.x=x;
         this.y=y;
@@ -88,11 +121,15 @@ class Fila{
     }
 
     //desenha os soldados da fila
-    draw(ctx,soldados_width,soldados_heigth,jogador,indice ){
+    draw(ctx,soldados_width,soldados_heigth,jogador,indice,nivel){
         var img = new Image();
         img.id = "imagem";
         var countUp=0, countLeft=0, countRight=0, countDown=0;
-
+        if( this.soldados[this.primeira_posicao].x == jogador.personagem.x && this.soldados[this.primeira_posicao].y == jogador.personagem.y){
+            console.log("PERDEU");
+            console.log(nivel);
+            jogador.restart(nivel);
+        }
 
         for (var i=0; i<this.tamanho;i++){
             var atual=mod((this.primeira_posicao-i),this.soldados.length);
@@ -100,7 +137,19 @@ class Fila{
 
             //up
             if(this.soldados[atual].x == this.soldados[proximo].x && this.soldados[atual].y > this.soldados[proximo].y){
-                countUp++;
+                countUp=0;
+
+                //determinar qual o sprite a usar
+                var c=i;
+                var atual1=mod((this.primeira_posicao-c),this.soldados.length);
+                var proximo1=mod((this.primeira_posicao-c+1),this.soldados.length);
+                while(this.soldados[atual1].x == this.soldados[proximo1].x && this.soldados[atual1].y > this.soldados[proximo1].y){
+                    c++;
+                    atual1=mod((this.primeira_posicao-c),this.soldados.length);
+                    proximo1=mod((this.primeira_posicao-c+1),this.soldados.length);
+
+                }
+                countUp+=c-(i+1);
                 if(countUp==9)
                     countUp=1;
                 else
@@ -110,7 +159,19 @@ class Fila{
             }
             //down
             else if(this.soldados[atual].x == this.soldados[proximo].x && this.soldados[atual].y < this.soldados[proximo].y){
-                countDown++;
+                countDown=0;
+
+                //determinar qual o sprite a usar
+                var c=i;
+                var atual1=mod((this.primeira_posicao-c),this.soldados.length);
+                var proximo1=mod((this.primeira_posicao-c+1),this.soldados.length);
+                while(this.soldados[atual1].x == this.soldados[proximo1].x && this.soldados[atual1].y < this.soldados[proximo1].y){
+                    c++;
+                    atual1=mod((this.primeira_posicao-c),this.soldados.length);
+                    proximo1=mod((this.primeira_posicao-c+1),this.soldados.length);
+
+                }
+                countDown+=c-(i+1);
                 if(countDown==9)
                     countDown=1;
                 else
@@ -120,7 +181,20 @@ class Fila{
             }
             //right
             else if(this.soldados[atual].x < this.soldados[proximo].x && this.soldados[atual].y == this.soldados[proximo].y){
-                countRight++;
+                countRight=0;
+
+                //determinar qual o sprite a usar
+                var c=i;
+                var atual1=mod((this.primeira_posicao-c),this.soldados.length);
+                var proximo1=mod((this.primeira_posicao-c+1),this.soldados.length);
+                while(this.soldados[atual1].x < this.soldados[proximo1].x && this.soldados[atual1].y == this.soldados[proximo1].y){
+                    c++;
+                    atual1=mod((this.primeira_posicao-c),this.soldados.length);
+                    proximo1=mod((this.primeira_posicao-c+1),this.soldados.length);
+
+                }
+                countRight+=c-(i+1);
+
                 if(countRight==9)
                     countRight=1;
                 else
@@ -130,7 +204,19 @@ class Fila{
             }
             //left
             else if(this.soldados[atual].x > this.soldados[proximo].x && this.soldados[atual].y == this.soldados[proximo].y){
-                countLeft++;
+                countLeft=0;
+
+                //determinar qual o sprite a usar
+                var c=i;
+                var atual1=mod((this.primeira_posicao-c),this.soldados.length);
+                var proximo1=mod((this.primeira_posicao-c+1),this.soldados.length);
+                while(this.soldados[atual1].x > this.soldados[proximo1].x && this.soldados[atual1].y == this.soldados[proximo1].y){
+                    c++;
+                    atual1=mod((this.primeira_posicao-c),this.soldados.length);
+                    proximo1=mod((this.primeira_posicao-c+1),this.soldados.length);
+
+                }
+                countLeft+=c-(i+1);
                 if(countLeft==9)
                     countLeft=1;
                 else
@@ -158,20 +244,35 @@ class Cenario{
         this.mapa=mapa;
     }
 
-    iniciaCenario(ctx,div_x, div_y,mapa_x, mapa_y, soldados_width, soldados_heigth, filas, jogador){
-        var counter=0;//contador que serve para controlar os fps na funcao animLoop
-        var index=0;//indice do array do mapa
-        for (let i=0; i<mapa_y; i+=div_y){
-            for (let k=0;k<mapa_x; k+=div_x){
-                if (this.mapa[index++]==0){//0==parede
-                    ctx.fillStyle="#FF0000";
-                }else{
+    fimDeJogo(jogador){
 
-                    ctx.fillStyle="#FFFFFF";
+    }
+    iniciaCenario(ctx,mapa_x, mapa_y, soldados_width, soldados_heigth, filas, jogador, ctxSoldados){
+        var counter=0;//contador que serve para controlar os fps na funcao animLoop
+        var img = new Image();
+/*
+        for (var i=0; i<mapa_y; i++){
+            for (var k=0;k<mapa_x; k++){
+                if (this.mapa[i][k]==0){//0==parede
+                    img.onload = function(){
+
+
+                    };
+                    img.src = "../imagens/p1.png";
+                }else if(this.mapa[i][k]==1){
+                    img.onload = function(){
+
+
+                    };
+                    img.src = "../imagens/images.jpg";
                 }
-                ctx.fillRect(k,i,div_x,div_y);
+                ctx.drawImage(img,k*soldados_width,i*soldados_heigth,soldados_width,soldados_heigth);
+
+
+
             }
         }
+*/
 
         for (let i=0;i<filas.length;i++){
             this.filas[i]=new Fila(filas[i]);
@@ -179,18 +280,18 @@ class Cenario{
 
         //desenha as filas iniciais
         for (let i=0; i<this.filas.length;i++){
-            this.filas[i].draw(ctx,soldados_width,soldados_heigth,jogador);
+            this.filas[i].draw(ctxSoldados,soldados_width,soldados_heigth,jogador,i,this.nivel);
         }
 
 
         //cria o movimento das filas
-        this.animLoop(ctx,soldados_width,soldados_heigth,counter,jogador);
+        this.animLoop(ctxSoldados,soldados_width,soldados_heigth,counter,jogador);
 
     }
     //funcao que cria o movimento da fila, basicamente chamama funcao movimenta_soldados de x em x fps
     animLoop(ctx,soldados_width,soldados_heigth, counter,jogador){
 
-        var framesToSkip=20;
+        var framesToSkip=this.velocidade;
         var This=this;
         var anim = function() {
 
@@ -214,21 +315,21 @@ class Cenario{
         var ch = ctx.canvas.height;
 
         //apagar canvas
-        ctx.clearRect(0, 0, cw, ch);
+
         for (let j=0; j<this.filas.length;j++){
             var fila= this.filas[j];
 
             //ultima posicao no array
             var last= mod(fila.primeira_posicao-fila.tamanho+1,fila.soldados.length);
 
-
+            ctx.clearRect(fila.soldados[last].x, fila.soldados[last].y, soldados_width, soldados_heigth);
             fila.atualizaPosicao();
-            fila.draw(ctx,soldados_width,soldados_heigth,jogador,j);
+            fila.draw(ctx,soldados_width,soldados_heigth,jogador,j, this.nivel);
         }
 
     }
 }
-
+/*
 class Ranking{
     constructor(user, jogador, nivel){
         this.user=user;
@@ -236,4 +337,4 @@ class Ranking{
         this.nivel=nivel;
     }
 
-}
+}*/
