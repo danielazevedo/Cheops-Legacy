@@ -7,7 +7,16 @@
 (function()
 {
     //automatically called as soon as the javascript is loaded
-
+    var img = new Image();
+    var img1 = new Image();
+    var img2 = new Image();
+    var img3 = new Image();
+    var img4 = new Image();
+    img.src = "../imagens/heal.png";
+    img1.src = "../imagens/ppp.png";
+    img2.src = "../imagens/ground.jpg";
+    img3.src = "../imagens/runner.png";
+    img4.src = "../imagens/stop_time.png";
     window.addEventListener("load", main);
 }());
 
@@ -21,6 +30,19 @@ function main() {
     var imagens3 = [];
     var imagens4 = [];
 
+
+    var img = new Image();
+    var img1 = new Image();
+    var img2 = new Image();
+    var img3 = new Image();
+    var img4 = new Image();
+    img.src = "../imagens/heal.png";
+    img1.src = "../imagens/ppp.png";
+    img2.src = "../imagens/ground.jpg";
+    img3.src = "../imagens/runner.png";
+    img4.src = "../imagens/stop_time.png";
+
+    var elementos=[img, img1, img2, img3, img4];
     for (let i = 0; i < 9; i++) {
         var imagem1 = new Image();
         var imagem2 = new Image();
@@ -40,6 +62,7 @@ function main() {
 
 
     }
+
     var imagens = [imagens1, imagens2, imagens3, imagens4];
 
 
@@ -75,12 +98,22 @@ function main() {
     n_vidas = parseInt(n_vidas);
     console.log(nivel, n_vidas);
 
+    if(nivel != 1){
+        var div = document.getElementById("helper");
+        var text = document.getElementById("text_helper");
+        div.style.display = 'none';
+        text.style.display = 'none';
+    }
+
+    document.getElementById("n_vidas").innerHTML = n_vidas;
 
     document.body.style.background = "url(../imagens/bg_nivel"+nivel+".png) no-repeat center center fixed";
     document.body.style.backgroundSize = "100% 100%";
 
+    var posicoes_inicio= [[120, 300],[120, 240]];
 
-    var dados_niveis = carregaCenarios();
+
+    var dados_niveis = carregaCenarios(soldado_width, soldado_height);
     //array de cenarios
     var cenarios = dados_niveis[0];
     //array de filas
@@ -88,7 +121,6 @@ function main() {
 
 
 
-    var posicoes_inicio= [[120, 240],[120, 240]];
 
     //posicao do jogador
     var pos_x = posicoes_inicio[nivel-1][0];
@@ -98,19 +130,22 @@ function main() {
     var cenario = cenarios[nivel-1];
     var mapa_x = cenario.mapa[0].length, mapa_y = cenario.mapa.length;//dimensoes dom mapa
 
-    init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas_niveis[nivel-1], ctxSoldados, ctxJogador, cenario, nivel, pos_x, pos_y, imagens, estado, n_vidas);
+    init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas_niveis[nivel-1], ctxSoldados, ctxJogador, cenario, nivel, pos_x, pos_y, imagens, estado, n_vidas, elementos, ctx);
 
 
 }
 
-function init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas, ctxSoldados, ctxJogador, cenario, nivel, pos_x, pos_y, imagens, estado, n_vidas){
-    //inicializar cenario e jogador
-    var jogador = new Jogador(pos_x, pos_y, n_vidas, "teste", 0, estado);
+function init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas, ctxSoldados, ctxJogador, cenario, nivel, pos_x, pos_y, imagens, estado, n_vidas,elementos, ctxBack){
+
+
+    //inicializar o jogador
+    var jogador = new Jogador(pos_x, pos_y, n_vidas, "teste",new Tempo(0,0), estado);
 
     //inicializar o jogo
-    cenario.iniciaCenario(ctx,mapa_x, mapa_y, soldado_width, soldado_height, filas, jogador, ctxSoldados);
+    cenario.iniciaCenario(ctx,mapa_x, mapa_y, soldado_width, soldado_height, filas, jogador, ctxSoldados,elementos);
 
-
+    var count = 0;
+    startCrono(jogador, count);
 
     //inicializar o jogador
     var img = new Image();
@@ -123,7 +158,7 @@ function init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas, ctxSold
     document.onkeydown = function (ev) {
         if (pressed) return;
         pressed = true;
-        keyHandler(ev, cenario, jogador, soldado_width, soldado_height, ctxJogador, imagens, cenario.mapa, ctxSoldados,nivel);
+        keyHandler(ev, cenario, jogador, soldado_width, soldado_height, ctxJogador, imagens, cenario.mapa, ctxSoldados,nivel, ctxBack);
     };
 
     document.onkeyup = function () {
@@ -148,7 +183,7 @@ function init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas, ctxSold
         return "nao existe";
     }
     //handler das setas
-    function keyHandler(ev, cenario, jogador, soldado_width, soldado_height, ctxJogador, imagens, mapa, ctx, nivel) {
+    function keyHandler(ev, cenario, jogador, soldado_width, soldado_height, ctxJogador, imagens, mapa, ctx, nivel, ctxBack) {
         var key = ev.keyCode;
         var x = jogador.personagem.x;
         var y = jogador.personagem.y;
@@ -217,42 +252,53 @@ function init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas, ctxSold
 
 
         }
-        var res = verifica_posicao(jogador, x, y, cenario.filas, mapa, soldado_width, soldado_height, nivel);
+        var res = verifica_posicao(jogador, x, y, cenario.filas, mapa, soldado_width, soldado_height, nivel, ctxBack, cenario);
 
 
-        if( res == 1 || res == 2){
-            if(res == 2) {
+        if( res == 1 || res == 2) {
+            if (res == 2) {
                 console.log("PERDEU");
                 jogador.restart(nivel, ctx, ctxJogador);
             }
-            //atualizar posicao do jogador
-            jogador.personagem.setPosicao(x, y);
 
-            var cw = ctxJogador.canvas.width;
-            var ch = ctxJogador.canvas.height;
+            //if (jogador.estado == 1) {
+                //atualizar posicao do jogador
+                jogador.personagem.setPosicao(x, y);
 
-            //apagar canvas
-            ctxJogador.clearRect(0, 0, cw, ch);
+                var cw = ctxJogador.canvas.width;
+                var ch = ctxJogador.canvas.height;
 
-            if (jogador.estado == 0) {
-                switch (dir) {
-                    case "up":
-                        jogador.draw(ctxJogador, soldado_width, soldado_height, imagens[0][countUp]);
-                        break;
-                    case "left":
-                        jogador.draw(ctxJogador, soldado_width, soldado_height, imagens[2][countLeft]);
-                        break;
-                    case "down":
-                        jogador.draw(ctxJogador, soldado_width, soldado_height, imagens[3][countDown]);
-                        break;
-                    case "right":
-                        jogador.draw(ctxJogador, soldado_width, soldado_height, imagens[1][countRight]);
-                        break;
+               /* if (nivel == 1) {
+                    var text = document.getElementById("text_helper");
+                    text.innerHTML = "Agora quando tiver oportunidade saia da fila, ou para passar para a proxima, ou então para chegar ao ponto de destino";
+                }*/
+                //apagar canvas
+                ctxJogador.clearRect(0, 0, cw, ch);
+
+                if (jogador.estado == 0) {
+                    switch (dir) {
+                        case "up":
+                            jogador.draw(ctxJogador, soldado_width, soldado_height, imagens[0][countUp]);
+                            break;
+                        case "left":
+                            jogador.draw(ctxJogador, soldado_width, soldado_height, imagens[2][countLeft]);
+                            break;
+                        case "down":
+                            jogador.draw(ctxJogador, soldado_width, soldado_height, imagens[3][countDown]);
+                            break;
+                        case "right":
+                            jogador.draw(ctxJogador, soldado_width, soldado_height, imagens[1][countRight]);
+                            break;
+
+                    }
 
                 }
 
-            }
-
+            /*}
+            else{
+                console.log("PERDEU");
+                jogador.restart(nivel, ctx, ctxJogador);
+            }*/
         }
     }
 
@@ -270,14 +316,37 @@ function verifica_colisoes(x,y,filas){
     return 0;
 }
 
-function verifica_posicao(jogador,x,y,filas, mapa, soldado_width,soldado_height, nivel){
+function verifica_posicao(jogador,x,y,filas, mapa, soldado_width,soldado_height, nivel, ctx, cenario){
 
     if(mapa[y/soldado_height][x/soldado_width] == 0)
         return 0;
 
-    if(mapa[y/soldado_height][x/soldado_width] == 2){
+    else if(mapa[y/soldado_height][x/soldado_width] == 2){
         console.log("NIVEL COMPLETO");
-        jogador.nextLevel(nivel);
+        jogador.nextLevel(nivel, jogador.tempo);
+        jogador.estado=1;
+    }
+    else if(mapa[y/soldado_height][x/soldado_width] == 3){
+        console.log("vida");
+        jogador.n_vidas++;
+        document.getElementById("n_vidas").innerHTML= jogador.n_vidas;
+        ctx.clearRect(x,y,soldado_width, soldado_height);
+        mapa[y/soldado_height][x/soldado_width] = 1;
+
+    }
+
+    else if(mapa[y/soldado_height][x/soldado_width] == 4){
+        console.log("aumenta velocidade filas");
+        cenario.velocidade=+40;
+        mapa[y/soldado_height][x/soldado_width] = 1;
+        ctx.clearRect(x,y,soldado_width, soldado_height);
+    }
+
+    else if(mapa[y/soldado_height][x/soldado_width] == 5){
+        console.log("parar as filas");
+        stopCrono(tID,jogador, (jogador.tempo.segundos+ jogador.tempo.minutos*60));
+        mapa[y/soldado_height][x/soldado_width] = 1;
+        ctx.clearRect(x,y,soldado_width, soldado_height);
     }
 
 
@@ -306,34 +375,69 @@ function  mod(n, m) {
 }
 
 
-function carregaCenarios(){
+function carregaCenarios(soldado_width, soldado_height){
     var cenarios = [];
     var array_filas = [];
 
     //NIVEL 1
-    var mapa = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
-                [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
-                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-                [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-                [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-                [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
-                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
-                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 0],
-                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 0],
-                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
-                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    var mapa = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 3, 1, 0, 0, 0, 1, 4, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+                [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+                [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+                [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 0, 0],
+                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 0, 0],
+                [0, 5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             ];
-    var filas = [
+    /*var filas = [
         [[3, 0], [300, 300], [300, 360], [300, 420], [360, 420], [420, 420], [480, 420], [540, 420], [540, 360], [540, 300], [480, 300], [420, 300], [360, 300]],
 
         [[3, 0], [840, 300], [840, 360], [840, 420], [780, 420], [720, 420], [660, 420], [600, 420], [600, 360], [600, 300], [660, 300], [720, 300], [780, 300]],
 
-    ];
+    ];*/
+    var filas =[];
+    var tamanho = 18;
     var velocidade = 20;
+
+    var fila=[[tamanho,0]];
+    var pos_x = 180;
+    var pos_y = 480;
+    [pos_x, pos_y] = up_down(5,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(5,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(5,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(5,soldado_width,pos_x, pos_y,fila);
+    filas.push(fila);
+
+    tamanho = 25;
+    var fila=[[tamanho,0]];
+    var pos_x = 300;
+    var pos_y = 240;
+    [pos_x, pos_y] = up_down(3,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(11,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(3,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(11,soldado_width,pos_x, pos_y,fila);
+    filas.push(fila);
+
+    tamanho = 6;
+    var fila=[[tamanho,0]];
+    var pos_x = 1500;
+    var pos_y = 600;
+    [pos_x, pos_y] = up_down(1,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(1,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(3,soldado_width,pos_x, pos_y,fila);
+    filas.push(fila);
+
+
 
     cenarios.push(new Cenario(velocidade,1,mapa));
     array_filas.push(filas);
@@ -353,7 +457,7 @@ function carregaCenarios(){
             [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 0],
             [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
             [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         ];
     filas = [
         [[3, 0], [300, 300], [300, 360], [300, 420], [360, 420], [420, 420], [480, 420], [540, 420], [540, 360], [540, 300], [480, 300], [420, 300], [360, 300]],
@@ -368,5 +472,71 @@ function carregaCenarios(){
 
 
     return [cenarios, array_filas];
+
+}
+var tID;
+function startCrono(jogador, seg)
+{
+    document.getElementById("time").innerHTML = "0:0s";
+    var data = new Date();
+    var tIni = data.getTime();
+    tID = setInterval(function(){
+
+        seg = updateCrono(jogador, seg);
+    }, 1000 );    //actualiza cronómetro a cada 5ms
+}
+
+function stopCrono(tID, jogador, seg){
+
+    clearInterval(tID);
+    setTimeout(function(){
+        startCrono(jogador, seg);
+    },5000);
+
+
+
+}
+
+
+function updateCrono(jogador, seg) {
+
+    seg+=1;
+    var min = Math.floor(seg/60);
+    jogador.tempo.segundos=seg;
+    jogador.tempo.minutos=min;
+    document.getElementById("time").innerHTML = min+":"+seg%60 + "s";
+    return seg;
+}
+
+function up_down(un, height, pos_x, pos_y, array){
+    for(let i=0; i<un; i++){
+        pos_y+=height;
+        array.push([pos_x,pos_y]);
+    }
+    return [pos_x, pos_y];
+}
+
+function down_up(un, height, pos_x, pos_y,array){
+    for(let i=0; i<un; i++){
+        pos_y-=height;
+        array.push([pos_x,pos_y]);
+    }
+    return [pos_x, pos_y];
+}
+
+function left_right(un, width, pos_x, pos_y, array){
+    for(let i=0; i<un; i++){
+        pos_x+=width;
+        array.push([pos_x,pos_y]);
+    }
+    return [pos_x, pos_y];
+}
+
+function right_left(un, width, pos_x, pos_y, array){
+    for(let i=0; i<un; i++){
+        pos_x-=width;
+        array.push([pos_x,pos_y]);
+    }
+    return [pos_x, pos_y];
 
 }

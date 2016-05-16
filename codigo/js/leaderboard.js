@@ -14,7 +14,7 @@ function main(){
 	}
 	bbutton.addEventListener('click', back);
 
-	//document.cookie="leaderboard=Daniel 3 10,Diniz 1 5,Paulo 6 1 ;expires=Thu, 01 Jan 2017 00:00:00 UTC";
+	document.cookie="leaderboard=Daniel 3 10,Diniz 1 5,Paulo 6 1 ;expires=Thu, 01 Jan 2017 00:00:00 UTC";
 
 	carrega_leaderboard();
 

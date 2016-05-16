@@ -33,11 +33,11 @@ class User{
 }
 
 class Jogador{
-    constructor(x,y, vidas, nome, tempo_restante, estado){
+    constructor(x,y, vidas, nome, tempo, estado){
         this.nome=nome;
         this.personagem=new Personagem(x,y);
         this.n_vidas=vidas;
-        this.tempo_restante=tempo_restante;
+        this.tempo=tempo;
         this.estado=estado;
         this.n_fila=-1;
     }
@@ -46,11 +46,12 @@ class Jogador{
         this.personagem.draw(ctx,width,height,imagem);
     }
 
-    nextLevel(nivel){
+    nextLevel(nivel, tempo){
         nivel++;
+        var segundos = tempo.segundos + tempo.minutos*60;
         document.cookie = "nivel=" + nivel;
         document.cookie = "n_vidas=" + this.n_vidas;
-        location.href = "../html/MotorDeJogo.html";
+        location.href = "../html/Transicao.html";
     }
 
     restartLevel(nivel){
@@ -63,14 +64,12 @@ class Jogador{
     }
 
     GameOver(nivel){
-/*
-        document.body.style.background = "url(../imagens/game_over.jpg) no-repeat center center fixed";
-        document.body.style.backgroundSize = "100% 100%";*/
-        setInterval(function(){
-            document.cookie = "nivel=" + nivel;
-            document.cookie = "n_vidas = 3";
-            location.href = "../html/Main.html";
-        },2000);
+
+
+
+        document.cookie = "nivel=" + nivel;
+        document.cookie = "n_vidas = 3";
+        location.href = "../html/Main.html";
 
     }
 
@@ -244,35 +243,63 @@ class Cenario{
         this.mapa=mapa;
     }
 
-    fimDeJogo(jogador){
-
-    }
-    iniciaCenario(ctx,mapa_x, mapa_y, soldados_width, soldados_heigth, filas, jogador, ctxSoldados){
+    iniciaCenario(ctx,mapa_x, mapa_y, soldados_width, soldados_heigth, filas, jogador, ctxSoldados,elementos){
         var counter=0;//contador que serve para controlar os fps na funcao animLoop
-        var img = new Image();
-/*
+
         for (var i=0; i<mapa_y; i++){
             for (var k=0;k<mapa_x; k++){
-                if (this.mapa[i][k]==0){//0==parede
-                    img.onload = function(){
 
+              /*  if (this.mapa[i][k]==0) {//0==parede
 
-                    };
-                    img.src = "../imagens/p1.png";
-                }else if(this.mapa[i][k]==1){
-                    img.onload = function(){
+                    ctx.drawImage(elementos[1], k * soldados_width, i * soldados_heigth, soldados_width, soldados_heigth);
 
+                    console.log( k * soldados_width, i * soldados_heigth, soldados_width, soldados_heigth);
 
-                    };
-                    img.src = "../imagens/images.jpg";
                 }
-                ctx.drawImage(img,k*soldados_width,i*soldados_heigth,soldados_width,soldados_heigth);
+
+
+                else if (this.mapa[i][k]!=0) {//0==parede
+
+                    ctx.drawImage(elementos[2], k * soldados_width, i * soldados_heigth, soldados_width, soldados_heigth);
+
+                    console.log( k * soldados_width, i * soldados_heigth, soldados_width, soldados_heigth);
+
+                }
+
+*/
+
+
+                if (this.mapa[i][k]==3) {//0==parede
+
+                    ctx.drawImage(elementos[0], k * soldados_width, i * soldados_heigth, soldados_width, soldados_heigth);
+
+                    console.log( k * soldados_width, i * soldados_heigth, soldados_width, soldados_heigth);
+
+                }
+
+                else if (this.mapa[i][k]==4) {//0==parede
+
+                    ctx.drawImage(elementos[3], k * soldados_width, i * soldados_heigth, soldados_width, soldados_heigth);
+
+                    console.log( k * soldados_width, i * soldados_heigth, soldados_width, soldados_heigth);
+
+                }
+
+
+                else if (this.mapa[i][k]==5) {//0==parede
+
+                    ctx.drawImage(elementos[4], k * soldados_width, i * soldados_heigth, soldados_width, soldados_heigth);
+
+                    console.log( k * soldados_width, i * soldados_heigth, soldados_width, soldados_heigth);
+                }
+
+
 
 
 
             }
         }
-*/
+
 
         for (let i=0;i<filas.length;i++){
             this.filas[i]=new Fila(filas[i]);
@@ -311,11 +338,11 @@ class Cenario{
     //apaga o ultimo elemento do fila e desenha o proximo movimento da fila
     movimenta_soldados(ctx,soldados_width, soldados_heigth,jogador){
 
-        var cw = ctx.canvas.width;
+       /* var cw = ctx.canvas.width;
         var ch = ctx.canvas.height;
 
-        //apagar canvas
-
+        apagar canvas
+*/
         for (let j=0; j<this.filas.length;j++){
             var fila= this.filas[j];
 

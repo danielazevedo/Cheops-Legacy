@@ -4,8 +4,39 @@ canvas{
 }
 
 body{
-    background: url("../imagens/img111.png")  no-repeat center center fixed;
-    background-size: 100% 100%;
+
     margin:0;
 }
+#time:before{
+    content: 'Tempo: ';
+}
 
+#n_vidas:before{
+    content: "Vidas: ";
+}
+#n_vidas, #time{
+    font-size: 200%;
+    color: #FFFFFF;
+    margin-left: 3vw;
+    margin-top: 90vh;
+    position: absolute;
+}
+
+#n_vidas{
+    margin-left: 20vw;
+}
+
+#helper{
+    margin-left: 80vw;
+    position: absolute;
+    height: 20vh;
+    width: 20vw;
+    background-color: #3A2716;
+    margin-top: 0;
+}
+
+#text_helper{
+    font-size: 180%;
+    color: #FFFFFF;
+    text-align: center;
+}

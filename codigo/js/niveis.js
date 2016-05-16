@@ -27,7 +27,7 @@ function main() {
         var v = ev.target.value;
         console.log(v);
         if (v != "back"){
-
+            document.cookie = "n_vidas = 3";
             var str = "nivel=" + v + "; expires=Thu, 1 Dec 2017 12:00:00 UTC";
             console.log(str);
             document.cookie = str;
