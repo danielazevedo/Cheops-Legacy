@@ -4,7 +4,8 @@ canvas{
 }
 
 body{
-
+    width: 1800px;
+    height: 900px;
     margin:0;
 }
 #time:before{
@@ -14,7 +15,7 @@ body{
 #n_vidas:before{
     content: "Vidas: ";
 }
-#n_vidas, #time{
+#n_vidas, #time, #tempo_fila{
     font-size: 200%;
     color: #FFFFFF;
     margin-left: 3vw;
@@ -25,18 +26,30 @@ body{
 #n_vidas{
     margin-left: 20vw;
 }
+#tempo_fila{
+    margin-left: 30vw;
+}
+
+#tempo_fila:before{
+    content: "Tempo fora da fila restante: ";
+}
 
 #helper{
     margin-left: 80vw;
     position: absolute;
     height: 20vh;
     width: 20vw;
-    background-color: #3A2716;
+    background: url("../imagens/pergaminho.png") no-repeat center;
+    background-size: 100% 100%;
     margin-top: 0;
 }
 
 #text_helper{
-    font-size: 180%;
-    color: #FFFFFF;
+
+    margin-left: 2vw;
+    margin-right: 2vw;
+    height: 80vh;
+    font-size: 170%;
+    color: #000000;
     text-align: center;
 }

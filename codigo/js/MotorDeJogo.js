@@ -12,11 +12,13 @@
     var img2 = new Image();
     var img3 = new Image();
     var img4 = new Image();
+    var img5 = new Image();
     img.src = "../imagens/heal.png";
     img1.src = "../imagens/ppp.png";
     img2.src = "../imagens/ground.jpg";
     img3.src = "../imagens/runner.png";
     img4.src = "../imagens/stop_time.png";
+    img5.src = "../imagens/remove.png"
     window.addEventListener("load", main);
 }());
 
@@ -36,13 +38,14 @@ function main() {
     var img2 = new Image();
     var img3 = new Image();
     var img4 = new Image();
+    var img5 = new Image();
     img.src = "../imagens/heal.png";
     img1.src = "../imagens/ppp.png";
     img2.src = "../imagens/ground.jpg";
     img3.src = "../imagens/runner.png";
     img4.src = "../imagens/stop_time.png";
-
-    var elementos=[img, img1, img2, img3, img4];
+    img5.src = "../imagens/remove.png"
+    var elementos=[img, img1, img2, img3, img4, img5];
     for (let i = 0; i < 9; i++) {
         var imagem1 = new Image();
         var imagem2 = new Image();
@@ -75,12 +78,11 @@ function main() {
     var cSoldados = document.getElementById("soldadosCanvas");
     var ctxSoldados = cSoldados.getContext("2d");
 
-    var div_x = 20, div_y = 20;//dimensoes de cada quadricula do mapa
-    var soldado_width = 60, soldado_height = 60;//dimensoes do quadrado que representa o soldado
+
 
     c.width = window.innerWidth;
     c.height = window.innerHeight;
-
+    var soldado_width = 60, soldado_height = 60;//dimensoes do quadrado que representa o soldado
 
     var value_cookie = getCookie("nivel");
 
@@ -139,14 +141,15 @@ function init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas, ctxSold
 
 
     //inicializar o jogador
-    var jogador = new Jogador(pos_x, pos_y, n_vidas, "teste",new Tempo(0,0), estado);
+    var jogador = new Jogador(pos_x, pos_y, n_vidas, "teste");
 
     //inicializar o jogo
     cenario.iniciaCenario(ctx,mapa_x, mapa_y, soldado_width, soldado_height, filas, jogador, ctxSoldados,elementos);
 
     var count = 0;
-    startCrono(jogador, count);
+    document.getElementById("time").innerHTML = "3:0s";
 
+    document.getElementById("tempo_fila").innerHTML="5:0s";
     //inicializar o jogador
     var img = new Image();
     img.src = "../imagens/right/right0.png";
@@ -154,10 +157,15 @@ function init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas, ctxSold
         jogador.draw(ctxJogador, soldado_width, soldado_height, img);
     }
 
+    var flag = 0;
     var pressed = false;
     document.onkeydown = function (ev) {
         if (pressed) return;
         pressed = true;
+        if(flag == 0 && (ev.keyCode==37 || ev.keyCode==38 ||ev.keyCode==39 ||ev.keyCode==40)){
+            startCrono(jogador, count, cenario.nivel);
+            flag = 1;
+        }
         keyHandler(ev, cenario, jogador, soldado_width, soldado_height, ctxJogador, imagens, cenario.mapa, ctxSoldados,nivel, ctxBack);
     };
 
@@ -246,13 +254,11 @@ function init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas, ctxSold
             jogador.estado = 0;
             cenario.filas[jogador.n_fila].tamanho--;
             jogador.n_fila=-1;
-      //      verifica_posicao(jogador, x, y, cenario.filas);
-      //     cenario.movimenta_soldados(ctx,soldado_width,soldado_height,jogador);
             ctx.clearRect(jogador.personagem.x, jogador.personagem.y, soldado_width, soldado_height);
 
 
         }
-        var res = verifica_posicao(jogador, x, y, cenario.filas, mapa, soldado_width, soldado_height, nivel, ctxBack, cenario);
+        var res = verifica_posicao(jogador, x, y, cenario.filas, mapa, soldado_width, soldado_height, nivel, ctxBack, cenario, ctx);
 
 
         if( res == 1 || res == 2) {
@@ -261,8 +267,6 @@ function init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas, ctxSold
                 jogador.restart(nivel, ctx, ctxJogador);
             }
 
-            //if (jogador.estado == 1) {
-                //atualizar posicao do jogador
                 jogador.personagem.setPosicao(x, y);
 
                 var cw = ctxJogador.canvas.width;
@@ -316,7 +320,7 @@ function verifica_colisoes(x,y,filas){
     return 0;
 }
 
-function verifica_posicao(jogador,x,y,filas, mapa, soldado_width,soldado_height, nivel, ctx, cenario){
+function verifica_posicao(jogador,x,y,filas, mapa, soldado_width,soldado_height, nivel, ctx, cenario, ctxSoldados){
 
     if(mapa[y/soldado_height][x/soldado_width] == 0)
         return 0;
@@ -343,12 +347,23 @@ function verifica_posicao(jogador,x,y,filas, mapa, soldado_width,soldado_height,
     }
 
     else if(mapa[y/soldado_height][x/soldado_width] == 5){
-        console.log("parar as filas");
+        console.log("parar o tempo");
         stopCrono(tID,jogador, (jogador.tempo.segundos+ jogador.tempo.minutos*60));
         mapa[y/soldado_height][x/soldado_width] = 1;
         ctx.clearRect(x,y,soldado_width, soldado_height);
+        var text = document.getElementById("text_helper");
+        text.innerHTML = "";
     }
+    else if(mapa[y/soldado_height][x/soldado_width] == 6){
+        console.log("remove elementos das filas");
+        for(var i=0; i<filas.length;i++){
+            filas[i].elimina_ultimo(ctxSoldados, soldado_width, soldado_height);
+            filas[i].tamanho--;
+        }
+        mapa[y/soldado_height][x/soldado_width] = 1;
+        ctx.clearRect(x,y,soldado_width, soldado_height);
 
+    }
 
     if(verifica_colisoes(x, y, filas) != 0)
         return  2;
@@ -362,6 +377,7 @@ function verifica_posicao(jogador,x,y,filas, mapa, soldado_width,soldado_height,
             console.log("entrou");
             if (jogador.estado == 0)
                 fila.tamanho++;
+            jogador.tempo_fora=0;
             jogador.estado = 1;
             jogador.n_fila = i;
         }
@@ -382,7 +398,7 @@ function carregaCenarios(soldado_width, soldado_height){
     //NIVEL 1
     var mapa = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 3, 1, 0, 0, 0, 1, 4, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 1, 1, 1, 6, 1, 1, 1, 0, 1, 1, 3, 1, 0, 0, 0, 1, 4, 1, 1, 1, 1, 1, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
                 [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
                 [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
@@ -409,32 +425,32 @@ function carregaCenarios(soldado_width, soldado_height){
     var velocidade = 20;
 
     var fila=[[tamanho,0]];
-    var pos_x = 180;
+    var pos_x = 480;
     var pos_y = 480;
     [pos_x, pos_y] = up_down(5,soldado_height,pos_x, pos_y,fila);
-    [pos_x, pos_y] = left_right(5,soldado_width,pos_x, pos_y,fila);
-    [pos_x, pos_y] = down_up(5,soldado_height,pos_x, pos_y,fila);
     [pos_x, pos_y] = right_left(5,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(5,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(5,soldado_width,pos_x, pos_y,fila);
     filas.push(fila);
 
     tamanho = 25;
     var fila=[[tamanho,0]];
-    var pos_x = 300;
+    var pos_x = 960;
     var pos_y = 240;
     [pos_x, pos_y] = up_down(3,soldado_height,pos_x, pos_y,fila);
-    [pos_x, pos_y] = left_right(11,soldado_width,pos_x, pos_y,fila);
-    [pos_x, pos_y] = down_up(3,soldado_height,pos_x, pos_y,fila);
     [pos_x, pos_y] = right_left(11,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(3,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(11,soldado_width,pos_x, pos_y,fila);
     filas.push(fila);
 
     tamanho = 6;
     var fila=[[tamanho,0]];
-    var pos_x = 1500;
+    var pos_x = 1320;
     var pos_y = 600;
     [pos_x, pos_y] = up_down(1,soldado_height,pos_x, pos_y,fila);
-    [pos_x, pos_y] = right_left(3,soldado_width,pos_x, pos_y,fila);
-    [pos_x, pos_y] = down_up(1,soldado_height,pos_x, pos_y,fila);
     [pos_x, pos_y] = left_right(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(1,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(3,soldado_width,pos_x, pos_y,fila);
     filas.push(fila);
 
 
@@ -475,14 +491,14 @@ function carregaCenarios(soldado_width, soldado_height){
 
 }
 var tID;
-function startCrono(jogador, seg)
+function startCrono(jogador, seg, nivel)
 {
-    document.getElementById("time").innerHTML = "0:0s";
+
     var data = new Date();
     var tIni = data.getTime();
     tID = setInterval(function(){
 
-        seg = updateCrono(jogador, seg);
+        seg = updateCrono(jogador, seg, nivel);
     }, 1000 );    //actualiza cronómetro a cada 5ms
 }
 
@@ -498,13 +514,23 @@ function stopCrono(tID, jogador, seg){
 }
 
 
-function updateCrono(jogador, seg) {
+function updateCrono(jogador, seg, nivel) {
 
     seg+=1;
     var min = Math.floor(seg/60);
     jogador.tempo.segundos=seg;
     jogador.tempo.minutos=min;
-    document.getElementById("time").innerHTML = min+":"+seg%60 + "s";
+    var m1 = 2-min;
+    var seg1= 60-seg%60;
+    document.getElementById("time").innerHTML = m1+":"+seg1 + "s";
+    if(jogador.estado == 0){
+        jogador.tempo_fora--;
+        if(jogador.tempo_fora<0){
+
+            jogador.restart(nivel);
+        }
+        document.getElementById("tempo_fila").innerHTML=jogador.tempo_fora+"s";
+    }
     return seg;
 }
 

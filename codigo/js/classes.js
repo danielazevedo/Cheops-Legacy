@@ -33,13 +33,14 @@ class User{
 }
 
 class Jogador{
-    constructor(x,y, vidas, nome, tempo, estado){
+    constructor(x,y, vidas, nome){
         this.nome=nome;
         this.personagem=new Personagem(x,y);
         this.n_vidas=vidas;
-        this.tempo=tempo;
-        this.estado=estado;
+        this.tempo=new Tempo(0,0);
+        this.estado=0;
         this.n_fila=-1;
+        this.tempo_fora=5;
     }
 
     draw (ctx, width, height,imagem){
@@ -117,6 +118,11 @@ class Fila{
 
     atualizaPosicao(){
         this.primeira_posicao= (this.primeira_posicao+1)%this.soldados.length;
+    }
+
+    elimina_ultimo(ctx, soldados_width, soldados_heigth){
+        var last= mod(this.primeira_posicao-this.tamanho+1,this.soldados.length);
+        ctx.clearRect(this.soldados[last].x, this.soldados[last].y, soldados_width, soldados_heigth);
     }
 
     //desenha os soldados da fila
@@ -292,6 +298,12 @@ class Cenario{
 
                     console.log( k * soldados_width, i * soldados_heigth, soldados_width, soldados_heigth);
                 }
+                else if (this.mapa[i][k]==6) {//0==parede
+
+                    ctx.drawImage(elementos[5], k * soldados_width, i * soldados_heigth, soldados_width, soldados_heigth);
+
+                    console.log( k * soldados_width, i * soldados_heigth, soldados_width, soldados_heigth);
+                }
 
 
 
@@ -355,6 +367,7 @@ class Cenario{
         }
 
     }
+
 }
 /*
 class Ranking{
