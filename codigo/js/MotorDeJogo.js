@@ -80,21 +80,14 @@ function main() {
 
 
 
+
+    var soldado_width = Math.ceil(c.width*60/1800), soldado_height = Math.ceil(c.height*60/900);//dimensoes do quadrado que representa o soldado
+    console.log(soldado_width, soldado_height);
     c.width = window.innerWidth;
     c.height = window.innerHeight;
-    var soldado_width = 60, soldado_height = 60;//dimensoes do quadrado que representa o soldado
 
-    var value_cookie = getCookie("nivel");
-
-    if (value_cookie != "nao existe") {
-        var nivel = value_cookie[0];
-    }
-
-    value_cookie = getCookie("n_vidas");
-
-    if (value_cookie != "nao existe") {
-        var n_vidas = value_cookie[0];
-    }
+    var nivel = localStorage.getItem("nivel");
+    var n_vidas = localStorage.getItem("vidas");
 
     nivel = parseInt(nivel);
     n_vidas = parseInt(n_vidas);
@@ -106,13 +99,16 @@ function main() {
         div.style.display = 'none';
         text.style.display = 'none';
     }
+    else{
+        var text = document.getElementById("text_helper");
+        text.innerHTML = 'Usando as teclas, desloque a sua personagem. Recolha os items se quiser saber a sua funcao';
+    }
 
     document.getElementById("n_vidas").innerHTML = n_vidas;
-
     document.body.style.background = "url(../imagens/bg_nivel"+nivel+".png) no-repeat center center fixed";
     document.body.style.backgroundSize = "100% 100%";
 
-    var posicoes_inicio= [[120, 300],[120, 240]];
+    var posicoes_inicio= [[2*soldado_width, 5*soldado_height],[2*soldado_width, 4*soldado_height],[29*soldado_width, 5*soldado_height], [29*soldado_width, 5*soldado_height], [0, 11*soldado_width]];
 
 
     var dados_niveis = carregaCenarios(soldado_width, soldado_height);
@@ -127,17 +123,15 @@ function main() {
     //posicao do jogador
     var pos_x = posicoes_inicio[nivel-1][0];
     var pos_y = posicoes_inicio[nivel-1][1];
-    var estado = 0;
-
     var cenario = cenarios[nivel-1];
     var mapa_x = cenario.mapa[0].length, mapa_y = cenario.mapa.length;//dimensoes dom mapa
 
-    init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas_niveis[nivel-1], ctxSoldados, ctxJogador, cenario, nivel, pos_x, pos_y, imagens, estado, n_vidas, elementos, ctx);
+    init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas_niveis[nivel-1], ctxSoldados, ctxJogador, cenario, nivel, pos_x, pos_y, imagens, n_vidas, elementos, ctx);
 
 
 }
 
-function init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas, ctxSoldados, ctxJogador, cenario, nivel, pos_x, pos_y, imagens, estado, n_vidas,elementos, ctxBack){
+function init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas, ctxSoldados, ctxJogador, cenario, nivel, pos_x, pos_y, imagens, n_vidas,elementos, ctxBack){
 
 
     //inicializar o jogador
@@ -149,10 +143,14 @@ function init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas, ctxSold
     var count = 0;
     document.getElementById("time").innerHTML = "3:0s";
 
-    document.getElementById("tempo_fila").innerHTML="5:0s";
+    document.getElementById("tempo_fila").innerHTML="5s";
     //inicializar o jogador
     var img = new Image();
-    img.src = "../imagens/right/right0.png";
+    if(nivel == 3 || nivel == 4)
+        img.src = "../imagens/left/left0.png";
+    else{
+        img.src = "../imagens/right/right0.png";
+    }
     img.onload = function () {
         jogador.draw(ctxJogador, soldado_width, soldado_height, img);
     }
@@ -160,36 +158,21 @@ function init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas, ctxSold
     var flag = 0;
     var pressed = false;
     document.onkeydown = function (ev) {
-        if (pressed) return;
+       /* if (pressed) return;
         pressed = true;
-        if(flag == 0 && (ev.keyCode==37 || ev.keyCode==38 ||ev.keyCode==39 ||ev.keyCode==40)){
+        */if(flag == 0 && (ev.keyCode==37 || ev.keyCode==38 ||ev.keyCode==39 ||ev.keyCode==40)){
             startCrono(jogador, count, cenario.nivel);
             flag = 1;
         }
         keyHandler(ev, cenario, jogador, soldado_width, soldado_height, ctxJogador, imagens, cenario.mapa, ctxSoldados,nivel, ctxBack);
     };
-
+/*
     document.onkeyup = function () {
         pressed = false;
     };
-
+*/
 }
 
-    function getCookie(username) {
-        var name = username + "=";
-        var cookie;
-        var c = document.cookie.split(';');
-        for (let i = 0; i < c.length; i++) {
-            cookie = c[i];
-            while (cookie.charAt(0) == ' ') {//avança espaços em branco
-                cookie = cookie.substring(1);
-            }
-            if (cookie.indexOf(name) == 0) {//se existir o username na cookie, retorna o valor
-                return cookie.substring(name.length, cookie.length);
-            }
-        }
-        return "nao existe";
-    }
     //handler das setas
     function keyHandler(ev, cenario, jogador, soldado_width, soldado_height, ctxJogador, imagens, mapa, ctx, nivel, ctxBack) {
         var key = ev.keyCode;
@@ -272,10 +255,6 @@ function init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas, ctxSold
                 var cw = ctxJogador.canvas.width;
                 var ch = ctxJogador.canvas.height;
 
-               /* if (nivel == 1) {
-                    var text = document.getElementById("text_helper");
-                    text.innerHTML = "Agora quando tiver oportunidade saia da fila, ou para passar para a proxima, ou então para chegar ao ponto de destino";
-                }*/
                 //apagar canvas
                 ctxJogador.clearRect(0, 0, cw, ch);
 
@@ -336,6 +315,9 @@ function verifica_posicao(jogador,x,y,filas, mapa, soldado_width,soldado_height,
         document.getElementById("n_vidas").innerHTML= jogador.n_vidas;
         ctx.clearRect(x,y,soldado_width, soldado_height);
         mapa[y/soldado_height][x/soldado_width] = 1;
+        if(cenario.nivel == 1){
+            document.getElementById("text_helper").innerHTML="Como pode reparar, ganhou mais 1 vida";
+        }
 
     }
 
@@ -344,6 +326,9 @@ function verifica_posicao(jogador,x,y,filas, mapa, soldado_width,soldado_height,
         cenario.velocidade=+40;
         mapa[y/soldado_height][x/soldado_width] = 1;
         ctx.clearRect(x,y,soldado_width, soldado_height);
+        if(cenario.nivel == 1){
+            document.getElementById("text_helper").innerHTML="Como pode reparar, a velocidade das filas diminuiu";
+        }
     }
 
     else if(mapa[y/soldado_height][x/soldado_width] == 5){
@@ -351,8 +336,9 @@ function verifica_posicao(jogador,x,y,filas, mapa, soldado_width,soldado_height,
         stopCrono(tID,jogador, (jogador.tempo.segundos+ jogador.tempo.minutos*60));
         mapa[y/soldado_height][x/soldado_width] = 1;
         ctx.clearRect(x,y,soldado_width, soldado_height);
-        var text = document.getElementById("text_helper");
-        text.innerHTML = "";
+        if(cenario.nivel == 1){
+            document.getElementById("text_helper").innerHTML="Como pode reparar, congelou os tempos 5 segundos";
+        }
     }
     else if(mapa[y/soldado_height][x/soldado_width] == 6){
         console.log("remove elementos das filas");
@@ -362,6 +348,9 @@ function verifica_posicao(jogador,x,y,filas, mapa, soldado_width,soldado_height,
         }
         mapa[y/soldado_height][x/soldado_width] = 1;
         ctx.clearRect(x,y,soldado_width, soldado_height);
+        if(cenario.nivel == 1){
+            document.getElementById("text_helper").innerHTML="Como pode reparar, o numero de soldados nas filas, dimnuiram 1 unidade";
+        }
 
     }
 
@@ -377,7 +366,8 @@ function verifica_posicao(jogador,x,y,filas, mapa, soldado_width,soldado_height,
             console.log("entrou");
             if (jogador.estado == 0)
                 fila.tamanho++;
-            jogador.tempo_fora=0;
+            document.getElementById("tempo_fila").innerHTML="5s";
+            jogador.tempo_fora=5;
             jogador.estado = 1;
             jogador.n_fila = i;
         }
@@ -406,11 +396,11 @@ function carregaCenarios(soldado_width, soldado_height){
                 [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
                 [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
                 [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
-                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 0, 0],
-                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 0, 0],
+                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
+                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
                 [0, 5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
                 [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             ];
@@ -443,14 +433,14 @@ function carregaCenarios(soldado_width, soldado_height){
     [pos_x, pos_y] = left_right(11,soldado_width,pos_x, pos_y,fila);
     filas.push(fila);
 
-    tamanho = 6;
+    tamanho = 7;
     var fila=[[tamanho,0]];
-    var pos_x = 1320;
-    var pos_y = 600;
-    [pos_x, pos_y] = up_down(1,soldado_height,pos_x, pos_y,fila);
-    [pos_x, pos_y] = left_right(3,soldado_width,pos_x, pos_y,fila);
-    [pos_x, pos_y] = down_up(1,soldado_height,pos_x, pos_y,fila);
-    [pos_x, pos_y] = right_left(3,soldado_width,pos_x, pos_y,fila);
+    var pos_x = 1200;
+    var pos_y = 420;
+    [pos_x, pos_y] = up_down(3,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(5,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(3,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(5,soldado_width,pos_x, pos_y,fila);
     filas.push(fila);
 
 
@@ -469,8 +459,8 @@ function carregaCenarios(soldado_width, soldado_height){
             [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
             [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
             [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
-            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 0],
-            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 0],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 0],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 0],
             [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
             [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -485,6 +475,136 @@ function carregaCenarios(soldado_width, soldado_height){
     cenarios.push(new Cenario(velocidade,2,mapa));
     array_filas.push(filas);
 
+//NIVEL 3
+    velocidade = 10;
+    mapa = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ];
+    filas = [];
+    tamanho = 10;
+    var fila=[[tamanho,0]];
+    pos_x = 480;
+    pos_y = 780;
+
+    [pos_x, pos_y] = left_right(17,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(1,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(17,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(1,soldado_height,pos_x, pos_y,fila);
+    filas.push(fila);
+
+
+    var fila=[[tamanho,0]];
+    pos_x = 600;
+    pos_y = 180;
+
+    [pos_x, pos_y] = left_right(17,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(1,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(17,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(1,soldado_height,pos_x, pos_y,fila);
+    filas.push(fila);
+
+    tamanho = 28;
+    var fila=[[tamanho,0]];
+    pos_x = 600;
+    pos_y = 360;
+
+    [pos_x, pos_y] = right_left(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(2,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(2,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(2,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(5,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(9,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(5,soldado_height,pos_x, pos_y,fila);
+    filas.push(fila);
+
+    cenarios.push(new Cenario(velocidade,3,mapa));
+    array_filas.push(filas);
+
+
+//NIVEL 4
+    mapa = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ];
+    filas = [];
+    tamanho = 10;
+    var fila=[[tamanho,0]];
+    pos_x = 60;
+    pos_y = 780;
+
+    [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(5,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(5,soldado_height,pos_x, pos_y,fila);
+    filas.push(fila);
+
+    tamanho = 10;
+    var fila=[[tamanho,0]];
+    pos_x = 600;
+    pos_y = 480;
+
+    [pos_x, pos_y] = right_left(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(5,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(5,soldado_height,pos_x, pos_y,fila);
+    filas.push(fila);
+
+
+    cenarios.push(new Cenario(velocidade,4,mapa));
+    array_filas.push(filas);
+
+
+
+    //NIVEL 5
+    mapa = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ];
+    filas =0
+
+    cenarios.push(new Cenario(velocidade,5,mapa));
+    array_filas.push(filas);
 
 
     return [cenarios, array_filas];

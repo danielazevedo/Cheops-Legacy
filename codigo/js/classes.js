@@ -40,7 +40,7 @@ class Jogador{
         this.tempo=new Tempo(0,0);
         this.estado=0;
         this.n_fila=-1;
-        this.tempo_fora=5;
+        this.tempo_fora=20;
     }
 
     draw (ctx, width, height,imagem){
@@ -50,26 +50,24 @@ class Jogador{
     nextLevel(nivel, tempo){
         nivel++;
         var segundos = tempo.segundos + tempo.minutos*60;
-        document.cookie = "nivel=" + nivel;
-        document.cookie = "n_vidas=" + this.n_vidas;
+        localStorage.setItem("nivel",nivel);
+        localStorage.setItem("vidas",this.n_vidas);
         location.href = "../html/Transicao.html";
     }
 
     restartLevel(nivel){
 
         this.n_vidas--;
-        document.cookie = "nivel=" + nivel;
-        document.cookie = "n_vidas=" + this.n_vidas;
+        localStorage.setItem("nivel",nivel);
+        localStorage.setItem("vidas",this.n_vidas);
         location.href = "../html/MotorDeJogo.html";
 
     }
 
     GameOver(nivel){
 
-
-
-        document.cookie = "nivel=" + nivel;
-        document.cookie = "n_vidas = 3";
+        localStorage.setItem("nivel",nivel);
+        localStorage.setItem("vidas","3");
         location.href = "../html/Main.html";
 
     }

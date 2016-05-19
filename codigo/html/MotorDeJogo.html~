@@ -8,9 +8,9 @@
     <script type="text/javascript" src="../js/MotorDeJogo.js"></script>
 </head>
 <body>
-    <canvas id="Canvas" width="1800" height="900"></canvas>
-    <canvas id="soldadosCanvas" width="1800" height="900"></canvas>
-    <canvas id="jogadorCanvas" width="1800" height="900"></canvas>
+    <canvas id="Canvas" width="1300" height="600"></canvas>
+    <canvas id="soldadosCanvas" width="1300" height="600"></canvas>
+    <canvas id="jogadorCanvas" width="1300" height="600"></canvas>
     <div id = "helper">
         <p id = "text_helper"></p>
     </div>
