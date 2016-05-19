@@ -193,15 +193,17 @@ function verifica_colisoes(x,y,filas){
     return 0;
 }
 
-function verifica_posicao(jogador,x,y,filas,  soldado_width,soldado_height, nivel, ctx, cenario, ctxSoldados){
+function verifica_posicao(jogador,x,y,filas,  soldado_width,soldado_height, ctx, cenario, ctxSoldados) {
 
-    var mapa=cenario.mapa;
-    if(mapa[y/soldado_height][x/soldado_width] == 0)
+    var mapa = cenario.mapa;
+    if (y < 0 || x < 0 || y>mapa.length || x<mapa[0].length) {
         return 0;
-
+    } else if (mapa[y / soldado_height][x / soldado_width] == 0){
+        return 0;
+    }
     else if(mapa[y/soldado_height][x/soldado_width] == 2){
         console.log("NIVEL COMPLETO");
-        jogador.nextLevel(nivel, jogador.tempo);
+        jogador.nextLevel(cenario.nivel, jogador.tempo);
         jogador.estado=1;
     }
     else if(mapa[y/soldado_height][x/soldado_width] == 3){

@@ -423,7 +423,7 @@ class Cenario{
 
 
     }
-    var res = verifica_posicao(jogador, x, y, cenario.filas, soldado_width, soldado_height, nivel, ctx, cenario, ctxJogador);
+    var res = verifica_posicao(jogador, x, y, cenario.filas, soldado_width, soldado_height, ctx, cenario, ctxJogador);
 
 
     if( res == 1 || res == 2) {
