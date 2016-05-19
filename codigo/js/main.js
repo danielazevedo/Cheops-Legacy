@@ -9,7 +9,7 @@
 
 
 function main() {
-
+	playSound();
 	var leftButton=window.document.getElementById("left");
 	var rightButton=window.document.getElementById("right");
 	var firstButton= window.document.getElementById("first");
@@ -40,12 +40,14 @@ function main() {
 
 
 	var changehtml=function(ev){
+		updateSound();
 		location.href=('../html/'+ev.target.value+'.html');
 	}
 
 
 
 	var back=function(){
+		updateSound();
 		location.href="../html/Login.html";
 	}
 

@@ -9,7 +9,7 @@ const opacDisabled=0.2;
 
 
 function main() {
-
+    playSound();
     var bbutton=document.getElementById("back");
 
     var mais= document.getElementById("mais");
@@ -35,6 +35,7 @@ function main() {
 
 
     var back=function(){
+        updateSound();
         location.href="../html/Main.html";
     }
     bbutton.addEventListener('click', back);

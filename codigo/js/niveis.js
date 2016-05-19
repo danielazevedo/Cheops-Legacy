@@ -9,6 +9,7 @@
 
 
 function main() {
+    playSound();
     var bbutton=document.getElementById('back');
     var b1 = document.getElementsByTagName('button')[0];
     var b2 = document.getElementsByTagName('button')[1];
@@ -26,7 +27,7 @@ function main() {
     var change=function(ev) {
         var v = ev.target.value;
         console.log(v);
-
+        updateSound();
         if (v != "back"){
             localStorage.setItem("vidas","3");
             localStorage.setItem("nivel",v);
