@@ -194,9 +194,10 @@ function verifica_colisoes(x,y,filas){
 }
 
 function verifica_posicao(jogador,x,y,filas,  soldado_width,soldado_height, ctx, cenario, ctxSoldados) {
-
+    console.log("testing 1",x,y);
     var mapa = cenario.mapa;
-    if (y < 0 || x < 0 || y>mapa.length || x<mapa[0].length) {
+    if (y < 0 || x < 0 || y>mapa.length*soldado_height || x>mapa[0].length*soldado_width) {
+        console.log("testing2");
         return 0;
     } else if (mapa[y / soldado_height][x / soldado_width] == 0){
         return 0;
