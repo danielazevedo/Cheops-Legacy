@@ -138,7 +138,7 @@ function init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas, ctxSold
     var jogador = new Jogador(pos_x, pos_y, n_vidas, "teste");
 
     //inicializar o jogo
-    cenario.iniciaCenario(ctx,mapa_x, mapa_y, soldado_width, soldado_height, filas, jogador, ctxSoldados,elementos);
+    cenario.iniciaCenario(ctx,mapa_x, mapa_y, soldado_width, soldado_height, filas, jogador, ctxSoldados,elementos,ctxJogador,imagens);
 
     var count = 0;
     document.getElementById("time").innerHTML = "3:0s";
@@ -156,15 +156,19 @@ function init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas, ctxSold
     }
 
     var flag = 0;
-    var pressed = false;
+    //var pressed = false;
     document.onkeydown = function (ev) {
        /* if (pressed) return;
         pressed = true;
-        */if(flag == 0 && (ev.keyCode==37 || ev.keyCode==38 ||ev.keyCode==39 ||ev.keyCode==40)){
-            startCrono(jogador, count, cenario.nivel);
-            flag = 1;
+        */
+        if(ev.keyCode==37 || ev.keyCode==38 ||ev.keyCode==39 ||ev.keyCode==40) {
+            if (flag == 0) {
+                startCrono(jogador, count, cenario.nivel);
+                flag = 1;
+            }
+            jogador.key = ev.keyCode;
         }
-        keyHandler(ev, cenario, jogador, soldado_width, soldado_height, ctxJogador, imagens, cenario.mapa, ctxSoldados,nivel, ctxBack);
+        //keyHandler(ev, cenario, jogador, soldado_width, soldado_height, ctxJogador, imagens, cenario.mapa, ctxSoldados,nivel, ctxBack);
     };
 /*
     document.onkeyup = function () {
@@ -173,117 +177,7 @@ function init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas, ctxSold
 */
 }
 
-    //handler das setas
-    function keyHandler(ev, cenario, jogador, soldado_width, soldado_height, ctxJogador, imagens, mapa, ctx, nivel, ctxBack) {
-        var key = ev.keyCode;
-        var x = jogador.personagem.x;
-        var y = jogador.personagem.y;
 
-
-
-        var dir = "right";
-        var jogador_width = soldado_width;
-        var jogador_height = soldado_height;
-        //Movement
-        switch (key) {
-            //left
-            case 37:
-                x -= jogador_width;
-                dir = "left";
-                //para nao começar no 1
-                if (countLeft + 1 == 9)
-                    countLeft = 1;
-                else
-                    countLeft = mod(countLeft + 1, 9);
-                countDown = 0, countUp = 0, countRight = 0;
-                break;
-            //up
-            case 38:
-                dir = "up";
-                y -= jogador_height;
-                if (countUp + 1 == 9)
-                    countUp = 1;
-                else
-                    countUp = mod(countUp + 1, 9);
-                countDown = 0, countLeft = 0, countRight = 0;
-                break;
-
-            //right
-            case 39:
-                dir = "right";
-                x += jogador_width;
-                if (countRight + 1 == 9)
-                    countRight = 1;
-                else
-                    countRight = mod(countRight + 1, 9);
-                countDown = 0, countUp = 0, countLeft = 0;
-                break;
-            //down
-            case 40:
-                dir = "down";
-                y += jogador_height;
-                if (countDown + 1 == 9)
-                    countDown = 1;
-                else
-                    countDown = mod(countDown + 1, 9);
-                countUp = 0, countLeft = 0, countRight = 0;
-                break;
-
-
-        }
-
-        //sair da fila
-        if (jogador.estado == 1) {
-            jogador.estado = 0;
-            cenario.filas[jogador.n_fila].tamanho--;
-            jogador.n_fila=-1;
-            ctx.clearRect(jogador.personagem.x, jogador.personagem.y, soldado_width, soldado_height);
-
-
-        }
-        var res = verifica_posicao(jogador, x, y, cenario.filas, mapa, soldado_width, soldado_height, nivel, ctxBack, cenario, ctx);
-
-
-        if( res == 1 || res == 2) {
-            if (res == 2) {
-                console.log("PERDEU");
-                jogador.restart(nivel, ctx, ctxJogador);
-            }
-
-                jogador.personagem.setPosicao(x, y);
-
-                var cw = ctxJogador.canvas.width;
-                var ch = ctxJogador.canvas.height;
-
-                //apagar canvas
-                ctxJogador.clearRect(0, 0, cw, ch);
-
-                if (jogador.estado == 0) {
-                    switch (dir) {
-                        case "up":
-                            jogador.draw(ctxJogador, soldado_width, soldado_height, imagens[0][countUp]);
-                            break;
-                        case "left":
-                            jogador.draw(ctxJogador, soldado_width, soldado_height, imagens[2][countLeft]);
-                            break;
-                        case "down":
-                            jogador.draw(ctxJogador, soldado_width, soldado_height, imagens[3][countDown]);
-                            break;
-                        case "right":
-                            jogador.draw(ctxJogador, soldado_width, soldado_height, imagens[1][countRight]);
-                            break;
-
-                    }
-
-                }
-
-            /*}
-            else{
-                console.log("PERDEU");
-                jogador.restart(nivel, ctx, ctxJogador);
-            }*/
-        }
-    }
 
 function verifica_colisoes(x,y,filas){
     for(var j=0; j<filas.length;j++) {
@@ -299,8 +193,9 @@ function verifica_colisoes(x,y,filas){
     return 0;
 }
 
-function verifica_posicao(jogador,x,y,filas, mapa, soldado_width,soldado_height, nivel, ctx, cenario, ctxSoldados){
+function verifica_posicao(jogador,x,y,filas,  soldado_width,soldado_height, nivel, ctx, cenario, ctxSoldados){
 
+    var mapa=cenario.mapa;
     if(mapa[y/soldado_height][x/soldado_width] == 0)
         return 0;
 
@@ -471,7 +366,6 @@ function carregaCenarios(soldado_width, soldado_height){
         [[3, 0], [840, 300], [840, 360], [840, 420], [780, 420], [720, 420], [660, 420], [600, 420], [600, 360], [600, 300], [660, 300], [720, 300], [780, 300]],
 
     ];
-    velocidade = 10;
     cenarios.push(new Cenario(velocidade,2,mapa));
     array_filas.push(filas);
 

@@ -41,6 +41,7 @@ class Jogador{
         this.estado=0;
         this.n_fila=-1;
         this.tempo_fora=20;
+        this.key=0;
     }
 
     draw (ctx, width, height,imagem){
@@ -247,7 +248,7 @@ class Cenario{
         this.mapa=mapa;
     }
 
-    iniciaCenario(ctx,mapa_x, mapa_y, soldados_width, soldados_heigth, filas, jogador, ctxSoldados,elementos){
+    iniciaCenario(ctx,mapa_x, mapa_y, soldados_width, soldados_heigth, filas, jogador, ctxSoldados,elementos, ctxJogador, imagens){
         var counter=0;//contador que serve para controlar os fps na funcao animLoop
 
         for (var i=0; i<mapa_y; i++){
@@ -322,19 +323,23 @@ class Cenario{
 
 
         //cria o movimento das filas
-        this.animLoop(ctxSoldados,soldados_width,soldados_heigth,counter,jogador);
+        this.animLoop(ctxSoldados,soldados_width,soldados_heigth,counter,jogador, ctxJogador, imagens);
 
     }
     //funcao que cria o movimento da fila, basicamente chamama funcao movimenta_soldados de x em x fps
-    animLoop(ctx,soldados_width,soldados_heigth, counter,jogador){
+    animLoop(ctx,soldados_width,soldados_heigth, counter,jogador, ctxJogador, imagens){
 
+        var velocidadeJogador=10;
         var framesToSkip=this.velocidade;
         var This=this;
         var anim = function() {
 
-            This.animLoop(ctx,soldados_width,soldados_heigth,counter,jogador);
+            This.animLoop(ctx,soldados_width,soldados_heigth,counter,jogador, ctxJogador, imagens);
         }
         if (counter < framesToSkip) {
+            if (mod(counter,velocidadeJogador)==0){
+                this.movimenta_jogador(jogador, soldados_width, soldados_heigth,ctxJogador,imagens, ctx);
+            }
             counter++;
             window.requestAnimationFrame(anim);
             return;
@@ -343,7 +348,120 @@ class Cenario{
         var reqID = window.requestAnimationFrame(anim);
         counter=0;
         this.movimenta_soldados(ctx,soldados_width,soldados_heigth,jogador);
+        if (mod(counter,velocidadeJogador)==0){
+            this.movimenta_jogador(jogador, soldados_width, soldados_heigth, ctxJogador,imagens, ctx);
+        }
     }
+
+    //handler das setas
+    movimenta_jogador(jogador, soldado_width, soldado_height, ctxJogador, imagens, ctx) {
+        var cenario=this;
+        var key = jogador.key;
+        var x = jogador.personagem.x;
+        var y = jogador.personagem.y;
+        var nivel = this.nivel;
+        jogador.key=0;
+
+        var dir = "right";
+        var jogador_width = soldado_width;
+        var jogador_height = soldado_height;
+        //Movement
+        switch (key) {
+            //left
+            case 37:
+                x -= jogador_width;
+                dir = "left";
+                //para nao começar no 1
+                if (countLeft + 1 == 9)
+                    countLeft = 1;
+                else
+                    countLeft = mod(countLeft + 1, 9);
+                countDown = 0, countUp = 0, countRight = 0;
+                break;
+            //up
+            case 38:
+                dir = "up";
+                y -= jogador_height;
+                if (countUp + 1 == 9)
+                    countUp = 1;
+                else
+                    countUp = mod(countUp + 1, 9);
+                countDown = 0, countLeft = 0, countRight = 0;
+                break;
+
+            //right
+            case 39:
+                dir = "right";
+                x += jogador_width;
+                if (countRight + 1 == 9)
+                    countRight = 1;
+                else
+                    countRight = mod(countRight + 1, 9);
+                countDown = 0, countUp = 0, countLeft = 0;
+                break;
+            //down
+            case 40:
+                dir = "down";
+                y += jogador_height;
+                if (countDown + 1 == 9)
+                    countDown = 1;
+                else
+                    countDown = mod(countDown + 1, 9);
+                countUp = 0, countLeft = 0, countRight = 0;
+                break;
+            default:
+                return;
+
+    }
+
+    //sair da fila
+    if (jogador.estado == 1) {
+        jogador.estado = 0;
+        cenario.filas[jogador.n_fila].tamanho--;
+        jogador.n_fila=-1;
+        ctx.clearRect(jogador.personagem.x, jogador.personagem.y, soldado_width, soldado_height);
+
+
+    }
+    var res = verifica_posicao(jogador, x, y, cenario.filas, soldado_width, soldado_height, nivel, ctx, cenario, ctxJogador);
+
+
+    if( res == 1 || res == 2) {
+        if (res == 2) {
+            console.log("PERDEU");
+            jogador.restart(nivel, ctx, ctxJogador);
+        }
+
+        jogador.personagem.setPosicao(x, y);
+
+        var cw = ctxJogador.canvas.width;
+        var ch = ctxJogador.canvas.height;
+
+        //apagar canvas
+        ctxJogador.clearRect(0, 0, cw, ch);
+
+        if (jogador.estado == 0) {
+            switch (dir) {
+                case "up":
+                    jogador.draw(ctxJogador, soldado_width, soldado_height, imagens[0][countUp]);
+                    break;
+                case "left":
+                    jogador.draw(ctxJogador, soldado_width, soldado_height, imagens[2][countLeft]);
+                    break;
+                case "down":
+                    jogador.draw(ctxJogador, soldado_width, soldado_height, imagens[3][countDown]);
+                    break;
+                case "right":
+                    jogador.draw(ctxJogador, soldado_width, soldado_height, imagens[1][countRight]);
+                    break;
+
+            }
+
+        }
+
+    }
+}
+
 
     //apaga o ultimo elemento do fila e desenha o proximo movimento da fila
     movimenta_soldados(ctx,soldados_width, soldados_heigth,jogador){
