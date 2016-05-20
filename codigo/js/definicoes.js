@@ -14,9 +14,8 @@ function main() {
 
     var mais= document.getElementById("mais");
     var menos= document.getElementById("menos");
-    var sound = document.getElementsByTagName('AUDIO')[0];
+    var sound = document.getElementsByTagName('audio')[0];
     var p=document.getElementsByTagName('p')[0];
-    sound.volume=0.5;
     p.innerHTML="0"+Math.round(sound.volume*100);
 
 
@@ -49,7 +48,7 @@ function changeMusic(){
     sound.src="../audio/musica"+i+".mp4";
 }
 function altera_volume(ev,btnClicked, otherBtn){
-    var sound = document.getElementsByTagName('AUDIO')[0];
+    var sound = document.getElementsByTagName('audio')[0];
     if(btnClicked.id=="menos"){
         if(sound.volume-0.1 <= 0.1){
             btnClicked.disabled=true;
@@ -86,5 +85,7 @@ function altera_volume(ev,btnClicked, otherBtn){
         p.innerHTML='00'+Math.round(sound.volume*100);
     else
         p.innerHTML=Math.round(sound.volume*100);
+
+    localStorage.volume=sound.volume;
 }
 

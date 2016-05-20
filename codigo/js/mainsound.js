@@ -7,6 +7,9 @@ function playSound() {
     if (sessionStorage.timePlayed) {
         sound.currentTime = sessionStorage.timePlayed;
     }
+    if (localStorage.volume){
+        sound.volume=localStorage.volume;
+    }
     sound.play();
 }
 
