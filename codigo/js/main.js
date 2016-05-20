@@ -9,7 +9,7 @@
 
 
 function main() {
-	playSound();
+	playMain();
 	var leftButton=window.document.getElementById("left");
 	var rightButton=window.document.getElementById("right");
 	var firstButton= window.document.getElementById("first");
@@ -47,9 +47,7 @@ function main() {
 
 
 	var back=function(){
-		sessionStorage.removeItem("currentTime");
-		sessionStorage.removeItem("volume");
-		sessionStorage.removeItem("currentSong");
+		deleteInfo();
 		location.href="../html/Login.html";
 	}
 

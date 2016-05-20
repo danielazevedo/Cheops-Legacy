@@ -9,7 +9,7 @@ const opacDisabled=0.2;
 
 
 function main() {
-    playSound();
+    playMain();
     var bbutton=document.getElementById("back");
 
     var mais= document.getElementById("mais");
@@ -26,7 +26,7 @@ function main() {
         mais.style.opacity=opacDisabled;
     }
     if (sessionStorage.currentSong) {
-        document.getElementById("select").selectedIndex = sessionStorage.currentSong;
+        document.getElementById("select").selectedIndex = sessionStorage.selectedSong;
     }
 
     var aumentaVolume= function(ev){
@@ -54,7 +54,8 @@ function changeMusic(){
     var x = document.getElementById("select");
     var i = x.selectedIndex;
     console.log(i);
-    if (sessionStorage.currentSong!=i){
+    if (sessionStorage.selectedtSong!=i){
+        sessionStorage.selectedSong=i;
         selectSound(i);
     }
 }

@@ -7,7 +7,7 @@
 }());
 
 function main(){
-	playSound();
+	playMain();
 	var bbutton=document.getElementsByTagName('button')[0];
 	var back=function(){
 		updateSound();

@@ -9,7 +9,7 @@
 
 
 function main() {
-    playSound();
+    playMain();
     var bbutton=document.getElementById('back');
     var b1 = document.getElementsByTagName('button')[0];
     var b2 = document.getElementsByTagName('button')[1];
