@@ -8,7 +8,7 @@
 
 
 function main() {
-	playSound();
+	//playSound();
 	var lbutton=document.getElementsByTagName('Button')[0];
 	var jbutton=document.getElementsByTagName('Button')[1];
 
@@ -43,7 +43,7 @@ function join(){
 			alert("ccc");
 				return;
 		}
-		updateSound();
+		//updateSound();
 		location.href = "../html/Main.html";
 	}
 }
@@ -59,7 +59,7 @@ function login(){
 	var res=checkLogin(log_user,log_pass);//verifica se o utilizador existe e no caso de existir, se a pass corresponde
 
 	if(res==1)
-		updateSound();
+		//updateSound();
 		location.href="../html/Main.html";
 }
 

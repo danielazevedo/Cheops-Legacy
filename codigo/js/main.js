@@ -47,7 +47,9 @@ function main() {
 
 
 	var back=function(){
-		updateSound();
+		sessionStorage.removeItem("currentTime");
+		sessionStorage.removeItem("volume");
+		sessionStorage.removeItem("currentSong");
 		location.href="../html/Login.html";
 	}
 
