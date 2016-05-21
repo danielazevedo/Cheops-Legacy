@@ -15,7 +15,7 @@
     img2.src = "../imagens/ground.jpg";
     img3.src = "../imagens/runner.png";
     img4.src = "../imagens/stop_time.png";
-    img5.src = "../imagens/remove.png"
+    img5.src = "../imagens/remove.png";
     window.addEventListener("load", main);
 }());
 
