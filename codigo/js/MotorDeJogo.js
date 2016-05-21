@@ -1,6 +1,3 @@
-/**
- * Created by daniel on 25-04-2016.
- */
 
 "use strict";
 
@@ -23,6 +20,67 @@
 }());
 
 var countUp = 0, countLeft = 0, countRight = 0, countDown = 0;
+
+
+/*function carregaImagens(imagensJogador, imagensSoldados){
+	var nLoad=0;
+	var totLoad=36;
+
+	for(var i=0; i<9;i++){
+		
+		var img = new Image();
+		img.addEventListener("load", imgLoadedHandlerJogador);
+		img.id = "up";
+		img.src = "../imagens/soldado/up/up" + i + ".png";
+
+		var img = new Image();
+		img.addEventListener("load", imgLoadedHandlerJogador);
+		img.id = "right";
+		img.src = "../imagens/soldado/right/right" + i + ".png";
+
+
+		var img = new Image();
+		img.addEventListener("load", imgLoadedHandlerJogador);
+		img.id = "left";
+		img.src = "../imagens/soldado/left/left" + i + ".png";
+
+
+		var img = new Image();
+		img.addEventListener("load", imgLoadedHandlerJogador);
+		img.id = "down";
+		img.src = "../imagens/soldado/down/down" + i + ".png";
+
+	}
+
+	function imgLoadedHandlerJogador(ev){
+
+		var img = ev.target;
+		switch(img.id){
+			case "up":
+				imagensSoldados[0].push(img);
+				break;
+			case "right":
+				imagensSoldados[1].push(img);
+				break;
+
+			case "left":
+				imagensSoldados[2].push(img);
+				break;
+
+			case "down":
+				imagensSoldados[3].push(img);
+				break;	
+		}
+		nLoad++;
+		if (nLoad == totLoad)
+		{
+			var ev2 = new Event("initend");
+			ctx.canvas.dispatchEvent(ev2);
+		}
+		
+	}
+	return imagensSoldados;
+}*/
 
 function main() {
 
@@ -53,10 +111,10 @@ function main() {
         var imagem4 = new Image();
 
 
-        imagem1.src = "../imagens/up/up" + i + ".png";
-        imagem2.src = "../imagens/right/right" + i + ".png";
-        imagem3.src = "../imagens/left/left" + i + ".png";
-        imagem4.src = "../imagens/down/down" + i + ".png";
+        imagem1.src = "../imagens/soldado/up/up" + i + ".png";
+        imagem2.src = "../imagens/soldado/right/right" + i + ".png";
+        imagem3.src = "../imagens/soldado/left/left" + i + ".png";
+        imagem4.src = "../imagens/soldado/down/down" + i + ".png";
 
         imagens1[i] = imagem1;
         imagens2[i] = imagem2;
@@ -67,6 +125,30 @@ function main() {
     }
 
     var imagens = [imagens1, imagens2, imagens3, imagens4];
+
+    for (let i = 0; i < 9; i++) {
+        var imagem1 = new Image();
+        var imagem2 = new Image();
+        var imagem3 = new Image();
+        var imagem4 = new Image();
+
+
+        imagem1.src = "../imagens/jogador/up/up" + i + ".png";
+        imagem2.src = "../imagens/jogador/right/right" + i + ".png";
+        imagem3.src = "../imagens/jogador/left/left" + i + ".png";
+        imagem4.src = "../imagens/jogador/down/down" + i + ".png";
+
+        imagens1[i] = imagem1;
+        imagens2[i] = imagem2;
+        imagens3[i] = imagem3;
+        imagens4[i] = imagem4;
+
+
+    }
+
+    var imagensJogador = [imagens1, imagens2, imagens3, imagens4];
+
+    //imagens = carregaImagens(imagens, imagensJogador);
 
 
     var c = document.getElementById("Canvas");
@@ -80,9 +162,7 @@ function main() {
 
 
 
-
     var soldado_width = Math.ceil(c.width*60/1800), soldado_height = Math.ceil(c.height*60/900);//dimensoes do quadrado que representa o soldado
-    console.log(soldado_width, soldado_height);
     c.width = window.innerWidth;
     c.height = window.innerHeight;
 
@@ -108,7 +188,9 @@ function main() {
     document.body.style.background = "url(../imagens/bg_nivel"+nivel+".png) no-repeat center center fixed";
     document.body.style.backgroundSize = "100% 100%";
 
-    var posicoes_inicio= [[2*soldado_width, 5*soldado_height],[2*soldado_width, 4*soldado_height],[29*soldado_width, 5*soldado_height], [29*soldado_width, 5*soldado_height], [0, 11*soldado_width]];
+    var posicoes_inicio= [[2*soldado_width, 5*soldado_height],[2*soldado_width, 4*soldado_height],[29*soldado_width, 5*soldado_height], 
+    					[0, 8*soldado_height], [29*soldado_width, 5*soldado_height], [29*soldado_width, 5*soldado_height], 
+    					[0, 3*soldado_height], [0, 5*soldado_height], [0, 5*soldado_height] ];
 
 
     var dados_niveis = carregaCenarios(soldado_width, soldado_height);
@@ -126,19 +208,19 @@ function main() {
     var cenario = cenarios[nivel-1];
     var mapa_x = cenario.mapa[0].length, mapa_y = cenario.mapa.length;//dimensoes dom mapa
 
-    init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas_niveis[nivel-1], ctxSoldados, ctxJogador, cenario, nivel, pos_x, pos_y, imagens, n_vidas, elementos, ctx);
+    init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas_niveis[nivel-1], ctxSoldados, ctxJogador, cenario, pos_x, pos_y, imagens, n_vidas, elementos, ctx, imagensJogador);
 
 
 }
 
-function init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas, ctxSoldados, ctxJogador, cenario, nivel, pos_x, pos_y, imagens, n_vidas,elementos, ctxBack){
+function init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas, ctxSoldados, ctxJogador, cenario, pos_x, pos_y, imagens, n_vidas,elementos, ctxBack, imagensJogador){
 
 
     //inicializar o jogador
-    var jogador = new Jogador(pos_x, pos_y, n_vidas, "teste");
+    var jogador = new Jogador(pos_x, pos_y, n_vidas, "teste", 0);
 
     //inicializar o jogo
-    cenario.iniciaCenario(ctx,mapa_x, mapa_y, soldado_width, soldado_height, filas, jogador, ctxSoldados,elementos,ctxJogador,imagens);
+    cenario.iniciaCenario(ctx,mapa_x, mapa_y, soldado_width, soldado_height, filas, jogador, ctxSoldados,elementos,ctxJogador,imagens, imagensJogador);
 
     var count = 0;
     document.getElementById("time").innerHTML = "3:0s";
@@ -146,10 +228,10 @@ function init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas, ctxSold
     document.getElementById("tempo_fila").innerHTML="5s";
     //inicializar o jogador
     var img = new Image();
-    if(nivel == 3 || nivel == 4)
-        img.src = "../imagens/left/left0.png";
+    if(cenario.nivel == 3 || cenario.nivel == 6 || cenario.nivel==5)
+        img.src = "../imagens/jogador/left/left0.png";
     else{
-        img.src = "../imagens/right/right0.png";
+        img.src = "../imagens/jogador/right/right0.png";
     }
     img.onload = function () {
         jogador.draw(ctxJogador, soldado_width, soldado_height, img);
@@ -261,6 +343,7 @@ function verifica_posicao(jogador,x,y,filas,  soldado_width,soldado_height, ctx,
         var last_mais1 = mod(fila.primeira_posicao - fila.tamanho, fila.soldados.length);
 
         if (fila.soldados[last_mais1].x == x && fila.soldados[last_mais1].y == y) {
+        	fila.presenca_jogador=true;
             console.log("entrou");
             if (jogador.estado == 0)
                 fila.tamanho++;
@@ -308,39 +391,31 @@ function carregaCenarios(soldado_width, soldado_height){
         [[3, 0], [840, 300], [840, 360], [840, 420], [780, 420], [720, 420], [660, 420], [600, 420], [600, 360], [600, 300], [660, 300], [720, 300], [780, 300]],
 
     ];*/
-    var filas =[];
-    var tamanho = 18;
-    var velocidade = 20;
 
+    var filas = [];
+    var velocidade=10;
+    var tamanho = 10;
     var fila=[[tamanho,0]];
-    var pos_x = 480;
-    var pos_y = 480;
-    [pos_x, pos_y] = up_down(5,soldado_height,pos_x, pos_y,fila);
-    [pos_x, pos_y] = right_left(5,soldado_width,pos_x, pos_y,fila);
-    [pos_x, pos_y] = down_up(5,soldado_height,pos_x, pos_y,fila);
-    [pos_x, pos_y] = left_right(5,soldado_width,pos_x, pos_y,fila);
-    filas.push(fila);
+    var pos_x = 240;
+    var pos_y = 780;
 
-    tamanho = 25;
-    var fila=[[tamanho,0]];
-    var pos_x = 960;
-    var pos_y = 240;
-    [pos_x, pos_y] = up_down(3,soldado_height,pos_x, pos_y,fila);
-    [pos_x, pos_y] = right_left(11,soldado_width,pos_x, pos_y,fila);
-    [pos_x, pos_y] = down_up(3,soldado_height,pos_x, pos_y,fila);
-    [pos_x, pos_y] = left_right(11,soldado_width,pos_x, pos_y,fila);
-    filas.push(fila);
+    [pos_x, pos_y] = left_right(7,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(9,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(7,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(9,soldado_height,pos_x, pos_y,fila);
+    filas.push(fila);    
 
-    tamanho = 7;
-    var fila=[[tamanho,0]];
-    var pos_x = 1200;
-    var pos_y = 420;
-    [pos_x, pos_y] = up_down(3,soldado_height,pos_x, pos_y,fila);
-    [pos_x, pos_y] = left_right(5,soldado_width,pos_x, pos_y,fila);
-    [pos_x, pos_y] = down_up(3,soldado_height,pos_x, pos_y,fila);
-    [pos_x, pos_y] = right_left(5,soldado_width,pos_x, pos_y,fila);
-    filas.push(fila);
 
+    tamanho = 10;
+    fila=[[tamanho,0]];
+    pos_x = 1140;
+    pos_y = 780;
+
+    [pos_x, pos_y] = right_left(7,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(9,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(7,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(9,soldado_height,pos_x, pos_y,fila);
+    filas.push(fila);    
 
 
     cenarios.push(new Cenario(velocidade,1,mapa));
@@ -357,18 +432,48 @@ function carregaCenarios(soldado_width, soldado_height){
             [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
             [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
             [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
-            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 0],
-            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 0],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2],
             [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
             [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         ];
-    filas = [
-        [[3, 0], [300, 300], [300, 360], [300, 420], [360, 420], [420, 420], [480, 420], [540, 420], [540, 360], [540, 300], [480, 300], [420, 300], [360, 300]],
 
-        [[3, 0], [840, 300], [840, 360], [840, 420], [780, 420], [720, 420], [660, 420], [600, 420], [600, 360], [600, 300], [660, 300], [720, 300], [780, 300]],
+    filas =[];
+    tamanho = 18;
+    velocidade = 20;
 
-    ];
+    fila=[[tamanho,0]];
+    pos_x = 480;
+    pos_y = 480;
+    [pos_x, pos_y] = up_down(5,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(5,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(5,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(5,soldado_width,pos_x, pos_y,fila);
+    filas.push(fila);
+
+    tamanho = 25;
+    fila=[[tamanho,0]];
+    pos_x = 960;
+    pos_y = 240;
+    [pos_x, pos_y] = up_down(3,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(11,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(3,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(11,soldado_width,pos_x, pos_y,fila);
+    filas.push(fila);
+
+    tamanho = 7;
+    fila=[[tamanho,0]];
+    pos_x = 1200;
+   pos_y = 480;
+    [pos_x, pos_y] = up_down(3,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(5,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(3,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(5,soldado_width,pos_x, pos_y,fila);
+    filas.push(fila);
+
+
+
     cenarios.push(new Cenario(velocidade,2,mapa));
     array_filas.push(filas);
 
@@ -376,8 +481,8 @@ function carregaCenarios(soldado_width, soldado_height){
     velocidade = 10;
     mapa = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-        [1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [2, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [2, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
         [0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
         [0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
         [0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
@@ -434,7 +539,205 @@ function carregaCenarios(soldado_width, soldado_height){
 
 
 //NIVEL 4
+   
     mapa = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 0],
+        [0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+        [1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ];
+
+   
+    velocidade=10;
+    filas = [];
+    tamanho = 7;
+    fila=[[tamanho,0]];
+    pos_x = 420;
+    pos_y = 840;
+
+    
+    [pos_x, pos_y] = down_up(4,soldado_height,pos_x, pos_y,fila);
+    pos_y-=240;
+   [pos_x, pos_y] = down_up(5,soldado_height,pos_x, pos_y,fila);
+   pos_y-=60;
+   [pos_x, pos_y] = down_up(1,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+
+    tamanho = 7;
+    fila=[[tamanho,0]];
+    pos_x = 480;
+    pos_y = 840;
+
+    
+    [pos_x, pos_y] = down_up(4,soldado_height,pos_x, pos_y,fila);
+    pos_y-=240;
+   [pos_x, pos_y] = down_up(5,soldado_height,pos_x, pos_y,fila);
+   pos_y-=60;
+   [pos_x, pos_y] = down_up(1,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+
+    tamanho = 7;
+    fila=[[tamanho,0]];
+    pos_x = 900;
+    pos_y = 660;
+
+    
+    [pos_x, pos_y] = right_left(5,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(4,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(5,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(4,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+
+    tamanho = 7;
+    fila=[[tamanho,0]];
+    pos_x = 900;
+    pos_y = 120;
+
+    
+    [pos_x, pos_y] = right_left(5,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(4,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(5,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(4,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+
+    tamanho = 7;
+    fila=[[tamanho,0]];
+    pos_x = 1260;
+    pos_y = 540;
+
+    
+    [pos_x, pos_y] = right_left(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(5,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(5,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+
+    tamanho = 7;
+    fila=[[tamanho,0]];
+    pos_x = 1320;
+    pos_y = 540;
+
+    
+    [pos_x, pos_y] = left_right(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(5,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(5,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+
+
+
+    cenarios.push(new Cenario(velocidade,4,mapa));
+    array_filas.push(filas);
+
+
+
+    //NIVEL 5
+
+
+
+
+    mapa = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0],
+        [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ];
+
+    velocidade=10;
+    filas = [];
+    tamanho = 15;
+    fila=[[tamanho,0]];
+    pos_x = 180;
+    pos_y = 780;
+
+    [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(5,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(5,soldado_height,pos_x, pos_y,fila);
+    filas.push(fila);
+
+    tamanho = 5;
+    fila=[[tamanho,0]];
+    pos_x = 1440;
+    pos_y = 480;
+
+    
+    [pos_x, pos_y] = right_left(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(5,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(5,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(7,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(1,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(2,soldado_height,pos_x, pos_y,fila);
+    filas.push(fila);
+
+
+    tamanho = 21;
+    fila=[[tamanho,0]];
+    pos_x = 960;
+    pos_y = 780;
+
+	[pos_x, pos_y] = right_left(8,soldado_width,pos_x, pos_y,fila);
+	[pos_x, pos_y] = down_up(9,soldado_height,pos_x, pos_y,fila);
+	[pos_x, pos_y] = left_right(8,soldado_width,pos_x, pos_y,fila);
+	[pos_x, pos_y] = up_down(9,soldado_height,pos_x, pos_y,fila);
+	filas.push(fila);
+
+
+	tamanho = 7;
+    fila=[[tamanho,0]];
+    pos_x = 1560;
+    pos_y = 300;
+
+     [pos_x, pos_y] = right_left(4,soldado_width,pos_x, pos_y,fila);
+     [pos_x, pos_y] = down_up(2,soldado_height,pos_x, pos_y,fila);
+     [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
+     [pos_x, pos_y] = up_down(2,soldado_height,pos_x, pos_y,fila);
+
+
+     filas.push(fila);
+
+
+    cenarios.push(new Cenario(velocidade,5,mapa));
+    array_filas.push(filas);
+
+
+
+	//NIVEL 6
+     mapa = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
         [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
@@ -451,10 +754,11 @@ function carregaCenarios(soldado_width, soldado_height){
         [0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ];
+    velocidade=7;
     filas = [];
-    tamanho = 10;
-    var fila=[[tamanho,0]];
-    pos_x = 60;
+    tamanho = 8;
+    fila=[[tamanho,0]];
+    pos_x = 180;
     pos_y = 780;
 
     [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
@@ -463,9 +767,9 @@ function carregaCenarios(soldado_width, soldado_height){
     [pos_x, pos_y] = up_down(5,soldado_height,pos_x, pos_y,fila);
     filas.push(fila);
 
-    tamanho = 10;
-    var fila=[[tamanho,0]];
-    pos_x = 600;
+    tamanho = 15;
+    fila=[[tamanho,0]];
+    pos_x = 720;
     pos_y = 480;
 
     [pos_x, pos_y] = right_left(4,soldado_width,pos_x, pos_y,fila);
@@ -474,13 +778,40 @@ function carregaCenarios(soldado_width, soldado_height){
     [pos_x, pos_y] = down_up(5,soldado_height,pos_x, pos_y,fila);
     filas.push(fila);
 
+    tamanho = 20;
+    fila=[[tamanho,0]];
+    pos_x = 1620;
+    pos_y = 240;
 
-    cenarios.push(new Cenario(velocidade,4,mapa));
+    
+    [pos_x, pos_y] = right_left(5,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(2,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(2,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(5,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(2,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(2,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(6,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(9,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(1,soldado_width,pos_x, pos_y,fila);
+    filas.push(fila);
+
+
+    tamanho = 10;
+    fila=[[tamanho,0]];
+    pos_x = 1260;
+    pos_y = 360;
+
+     [pos_x, pos_y] = right_left(13,soldado_width,pos_x, pos_y,fila);
+     [pos_x, pos_y] = down_up(3,soldado_height,pos_x, pos_y,fila);
+     [pos_x, pos_y] = left_right(13,soldado_width,pos_x, pos_y,fila);
+     [pos_x, pos_y] = up_down(3,soldado_height,pos_x, pos_y,fila);
+     filas.push(fila);
+
+    cenarios.push(new Cenario(velocidade,6,mapa));
     array_filas.push(filas);
 
 
-
-    //NIVEL 5
+      //NIVEL 7
     mapa = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
@@ -488,20 +819,650 @@ function carregaCenarios(soldado_width, soldado_height){
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 2, 2, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ];
+
+    velocidade=10;
+    filas = [];
+    tamanho = 3;
+    fila=[[tamanho,0]];
+    pos_x = 840;
+    pos_y = 780;
+
+    [pos_x, pos_y] = right_left(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(1,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(1,soldado_height,pos_x, pos_y,fila);
+
+     filas.push(fila);
+
+    tamanho = 3;
+    fila=[[tamanho,0]];
+    pos_x = 900;
+    pos_y = 780;
+
+    [pos_x, pos_y] = left_right(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(1,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(1,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+	tamanho = 3;
+    fila=[[tamanho,0]];
+    pos_x = 1320;
+    pos_y = 780;
+
+	[pos_x, pos_y] = right_left(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(1,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(1,soldado_height,pos_x, pos_y,fila);
+
+	filas.push(fila);
+
+	tamanho = 3;
+    fila=[[tamanho,0]];
+    pos_x = 1380;
+    pos_y = 780;
+
+    [pos_x, pos_y] = left_right(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(1,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(1,soldado_height,pos_x, pos_y,fila);
+
+     filas.push(fila);
+
+
+     //cima
+
+     tamanho = 3;
+    fila=[[tamanho,0]];
+    pos_x = 840;
+    pos_y = 240;
+
+    [pos_x, pos_y] = right_left(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(2,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(2,soldado_height,pos_x, pos_y,fila);
+
+     filas.push(fila);
+
+    tamanho = 3;
+    fila=[[tamanho,0]];
+    pos_x = 900;
+    pos_y = 240;
+
+    [pos_x, pos_y] = left_right(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(2,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(2,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+	tamanho = 3;
+    fila=[[tamanho,0]];
+    pos_x = 1320;
+    pos_y = 240;
+
+	[pos_x, pos_y] = right_left(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(2,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(2,soldado_height,pos_x, pos_y,fila);
+
+	filas.push(fila);
+
+	tamanho = 3;
+    fila=[[tamanho,0]];
+    pos_x = 1380;
+    pos_y = 240;
+
+    [pos_x, pos_y] = left_right(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(2,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(2,soldado_height,pos_x, pos_y,fila);
+
+     filas.push(fila);
+
+     tamanho = 15;
+    fila=[[tamanho,0]];
+    pos_x = 1440;
+    pos_y = 660;
+
+    [pos_x, pos_y] = left_right(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(6,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(6,soldado_height,pos_x, pos_y,fila);
+
+     filas.push(fila);
+
+
+     tamanho = 16;
+    fila=[[tamanho,0]];
+    pos_x = 120;
+    pos_y = 480;
+
+    [pos_x, pos_y] = left_right(5,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(5,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(5,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(5,soldado_height,pos_x, pos_y,fila);
+
+     filas.push(fila);
+
+     tamanho = 9;
+    fila=[[tamanho,0]];
+    pos_x = 180;
+    pos_y = 420;
+
+    [pos_x, pos_y] = left_right(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(3,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(3,soldado_height,pos_x, pos_y,fila);
+
+     filas.push(fila);
+
+      tamanho = 3;
+    fila=[[tamanho,0]];
+    pos_x = 60;
+    pos_y = 720;
+
+    [pos_x, pos_y] = left_right(2,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(2,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(2,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(2,soldado_height,pos_x, pos_y,fila);
+
+     filas.push(fila);
+
+    
+    tamanho = 3;
+    fila=[[tamanho,0]];
+    pos_x = 360;
+    pos_y = 720;
+
+    [pos_x, pos_y] = right_left(2,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(2,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(2,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(2,soldado_height,pos_x, pos_y,fila);
+
+     filas.push(fila);
+
+
+
+
+    cenarios.push(new Cenario(velocidade,7,mapa));
+    array_filas.push(filas);
+
+//NIVEL 8
+    mapa = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ];
-    filas =0
 
-    cenarios.push(new Cenario(velocidade,5,mapa));
+    velocidade=10;
+    filas = [];
+    tamanho = 8;
+    fila=[[tamanho,0]];
+    pos_x = 720;
+    pos_y = 540;
+
+    [pos_x, pos_y] = left_right(6,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(4,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(6,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(4,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+    tamanho=18;
+    fila=[[tamanho,0]];
+    pos_x = 660;
+    pos_y = 600;
+
+    [pos_x, pos_y] = left_right(8,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(6,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(8,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(6,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+
+    tamanho=25;
+    fila=[[tamanho,0]];
+    pos_x = 600;
+    pos_y = 660;
+
+    [pos_x, pos_y] = left_right(10,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(8,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(10,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(8,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+     tamanho=30;
+    fila=[[tamanho,0]];
+    pos_x = 540;
+    pos_y = 720;
+
+    [pos_x, pos_y] = left_right(12,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(10,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(12,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(10,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+
+     tamanho=8;
+    fila=[[tamanho,0]];
+    pos_x = 120;
+    pos_y = 780;
+
+    [pos_x, pos_y] = left_right(1,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(11,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(1,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(11,soldado_height,pos_x, pos_y,fila);
+
+
+    filas.push(fila);
+
+
+
+     tamanho=8;
+    fila=[[tamanho,0]];
+    pos_x = 240;
+    pos_y = 780;
+
+    [pos_x, pos_y] = left_right(1,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(11,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(1,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(11,soldado_height,pos_x, pos_y,fila);
+
+
+    filas.push(fila);
+
+
+     tamanho=8;
+    fila=[[tamanho,0]];
+    pos_x = 360;
+    pos_y = 780;
+
+    [pos_x, pos_y] = left_right(1,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(11,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(1,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(11,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+
+
+	cenarios.push(new Cenario(velocidade,8,mapa));
     array_filas.push(filas);
+
+    //NIVEL 9
+    mapa = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ];
+
+    velocidade=5;
+    filas = [];
+    tamanho = 20;
+    fila=[[tamanho,0]];
+    pos_x = 120;
+    pos_y = 780;
+
+    [pos_x, pos_y] = left_right(1,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(11,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(1,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(11,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+
+    tamanho = 10;
+    fila=[[tamanho,0]];
+    pos_x = 360;
+    pos_y = 780;
+
+    [pos_x, pos_y] = right_left(1,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(11,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(1,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(11,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+
+    tamanho = 20;
+    fila=[[tamanho,0]];
+    pos_x = 420;
+    pos_y = 780;
+
+    [pos_x, pos_y] = left_right(1,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(11,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(1,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(11,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+
+    tamanho = 10;
+    fila=[[tamanho,0]];
+    pos_x = 660;
+    pos_y = 780;
+
+    [pos_x, pos_y] = right_left(1,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(5,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(1,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(5,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+
+
+    tamanho = 10;
+    fila=[[tamanho,0]];
+    pos_x = 660;
+    pos_y = 420;
+
+    [pos_x, pos_y] = right_left(1,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(5,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(1,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(5,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+
+
+    tamanho = 10;
+    fila=[[tamanho,0]];
+    pos_x = 840;
+    pos_y = 720;
+
+    [pos_x, pos_y] = right_left(1,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(5,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(1,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(5,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+
+
+    tamanho = 5;
+    fila=[[tamanho,0]];
+    pos_x = 840;
+    pos_y = 360;
+
+    [pos_x, pos_y] = right_left(1,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(4,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(1,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(4,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+	
+	cenarios.push(new Cenario(velocidade,9,mapa));
+    array_filas.push(filas);
+
+
+    //NIVEL 10
+    mapa = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ];
+
+    velocidade=5;
+    filas = [];
+    tamanho = 5;
+    fila=[[tamanho,0]];
+    pos_x = 360;
+    pos_y = 300;
+
+
+    [pos_x, pos_y] = right_left(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(2,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = left_right(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(2,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+
+    velocidade=7;
+    tamanho = 5;
+    fila=[[tamanho,0]];
+    pos_x = 180;
+    pos_y = 480;
+
+
+    [pos_x, pos_y] = left_right(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(2,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(3,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(2,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+    tamanho = 5;
+    fila=[[tamanho,0]];
+    pos_x = 180;
+    pos_y = 780;
+
+
+    [pos_x, pos_y] = left_right(2,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(4,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(2,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(4,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+
+    tamanho = 5;
+    fila=[[tamanho,0]];
+    pos_x = 360;
+    pos_y = 780;
+
+
+    [pos_x, pos_y] = left_right(2,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(4,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(2,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(4,soldado_height,pos_x, pos_y,fila);
+
+    
+filas.push(fila);
+
+        tamanho = 5;
+    fila=[[tamanho,0]];
+    pos_x = 480;
+    pos_y = 360;
+
+
+    [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(1,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(1,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+
+
+        tamanho = 5;
+    fila=[[tamanho,0]];
+    pos_x = 780;
+    pos_y = 360;
+
+
+    [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(1,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(1,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+
+
+        tamanho = 5;
+    fila=[[tamanho,0]];
+    pos_x = 540;
+    pos_y = 600;
+
+
+    [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(1,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(1,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+
+
+
+        tamanho = 5;
+    fila=[[tamanho,0]];
+    pos_x = 600;
+    pos_y = 480;
+
+
+    [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(1,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(1,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+
+
+
+        tamanho = 5;
+    fila=[[tamanho,0]];
+    pos_x = 540;
+    pos_y = 840;
+
+
+    [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(3,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(3,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+
+
+
+        tamanho = 5;
+    fila=[[tamanho,0]];
+    pos_x = 840;
+    pos_y = 840;
+
+
+    [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(4,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(4,soldado_height,pos_x, pos_y,fila);
+    filas.push(fila);
+
+
+
+	tamanho = 5;
+    fila=[[tamanho,0]];
+    pos_x = 1140;
+    pos_y = 840;
+
+
+    [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(4,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(4,soldado_height,pos_x, pos_y,fila);
+    filas.push(fila);
+
+
+
+    tamanho = 5;
+    fila=[[tamanho,0]];
+    pos_x = 1020;
+    pos_y = 540;
+
+
+    [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(2,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(2,soldado_height,pos_x, pos_y,fila);
+    filas.push(fila);
+
+
+     tamanho = 5;
+    fila=[[tamanho,0]];
+    pos_x = 1140;
+    pos_y = 360;
+
+
+    [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(2,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(2,soldado_height,pos_x, pos_y,fila);
+    filas.push(fila);
+
+
+    tamanho = 5;
+    fila=[[tamanho,0]];
+    pos_x = 1440;
+    pos_y = 780;
+
+
+    [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(6,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(6,soldado_height,pos_x, pos_y,fila);
+    filas.push(fila);
+
+
+
+    cenarios.push(new Cenario(velocidade,10,mapa));
+    array_filas.push(filas);
+
+
+
 
 
     return [cenarios, array_filas];
