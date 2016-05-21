@@ -63,6 +63,7 @@ class Jogador{
         console.log("vidas-",this.n_vidas, nivel);
         localStorage.setItem("nivel",nivel);
         localStorage.setItem("vidas",this.n_vidas);
+        updateSound();
         location.href = "../html/MotorDeJogo.html";
 
     }
