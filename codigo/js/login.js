@@ -43,7 +43,7 @@ function join(){
 			alert("ccc");
 				return;
 		}
-		//updateSound();
+		resetSound();
 		location.href = "../html/Main.html";
 	}
 }
@@ -59,7 +59,7 @@ function login(){
 	var res=checkLogin(log_user,log_pass);//verifica se o utilizador existe e no caso de existir, se a pass corresponde
 
 	if(res==1)
-		//updateSound();
+		resetSound();
 		location.href="../html/Main.html";
 }
 

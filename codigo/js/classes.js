@@ -71,6 +71,7 @@ class Jogador{
 
         localStorage.setItem("nivel",nivel);
         localStorage.setItem("vidas","3");
+        resetSound();
         location.href = "../html/Main.html";
 
     }
@@ -343,10 +344,9 @@ class Cenario{
 
         var velocidadeJogador=10;
         var framesToSkip=this.velocidade;
-        var This=this;
         var anim = function() {
 
-            This.animLoop(ctx,soldados_width,soldados_heigth,counter,jogador, ctxJogador, imagens, imagensJogador);
+            this.animLoop(ctx,soldados_width,soldados_heigth,counter,jogador, ctxJogador, imagens, imagensJogador);
         }
         if (mod(counter,velocidadeJogador)==1){
             this.movimenta_jogador(jogador, soldados_width, soldados_heigth, ctxJogador,imagens, ctx, imagensJogador);

@@ -1,15 +1,14 @@
 /**
  * Created by Miguel on 19/05/2016.
  */
-function playMain(){ //plays user's selected song --- called outside of motordejogo (changes current song)
-    if (!sessionStorage.selectedSong){
-        sessionStorage.selectedSong=0;
+
+function resetSound(){
+    if (sessionStorage.selectedSong){
+        sessionStorage.currentSong=sessionStorage.selectedSong;
+    }else{
+        sessionStorage.currentSong=0;
     }
-    if (sessionStorage.selectedSong!=sessionStorage.currentSong){
-        selectSound((sessionStorage.selectedSong));
-    }else {
-        playSound();
-    }
+    sessionStorage.currentTime=0;
 }
 
 function playSound() {//plays currently selected song (keeps playing surrentSong)

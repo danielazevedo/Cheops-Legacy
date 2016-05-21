@@ -9,7 +9,7 @@ const opacDisabled=0.2;
 
 
 function main() {
-    playMain();
+    playSound();
     var bbutton=document.getElementById("back");
 
     var mais= document.getElementById("mais");
