@@ -190,7 +190,7 @@ function main() {
 
     var posicoes_inicio= [[2*soldado_width, 5*soldado_height],[2*soldado_width, 4*soldado_height],[29*soldado_width, 5*soldado_height], 
     					[0, 8*soldado_height], [29*soldado_width, 5*soldado_height], [29*soldado_width, 5*soldado_height], 
-    					[0, 3*soldado_height], [0, 5*soldado_height], [0, 5*soldado_height] ];
+    					[0, 3*soldado_height], [0, 5*soldado_height], [0, 5*soldado_height],[0, 5*soldado_height] ];
 
 
     var dados_niveis = carregaCenarios(soldado_width, soldado_height);
