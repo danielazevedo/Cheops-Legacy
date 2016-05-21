@@ -89,15 +89,14 @@ function login(ev){
             sessionStorage.nivel = ev.response["nivel"];
             sessionStorage.Musica = ev.response["Musica"];
             sessionStorage.teclas = ev.response["Teclas"];
-            sessionStorage.Volume_musica = ev.response["Volume"];
+            sessionStorage.volume = ev.response["Volume"];
             sessionStorage.vidas = ev.response["vidas"];
             sessionStorage.freezer = ev.response["freezer"];
             sessionStorage.speeder = ev.response["speeder"];
             sessionStorage.killer = ev.response["killer"];
-	   		updateSound();
-            location.href = "../html/Main.html";
 
-            console.log(sessionStorage.name, sessionStorage.password, sessionStorage.email, sessionStorage.nivel, sessionStorage.Musica, sessionStorage.teclas, sessionStorage.Volume_musica,
+
+            console.log(sessionStorage.name, sessionStorage.password, sessionStorage.email, sessionStorage.nivel, sessionStorage.Musica, sessionStorage.teclas, sessionStorage.volume,
             	sessionStorage.vidas, sessionStorage.freezer, sessionStorage.speeder, sessionStorage.killer);
             
             

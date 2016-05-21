@@ -4,8 +4,6 @@ canvas{
 }
 
 body{
-    width: 1800px;
-    height: 900px;
     margin:0;
 }
 #time:before{
