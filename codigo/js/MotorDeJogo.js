@@ -396,8 +396,8 @@ function carregaCenarios(soldado_width, soldado_height){
     var velocidade=10;
     var tamanho = 10;
     var fila=[[tamanho,0]];
-    var pos_x = 240;
-    var pos_y = 780;
+    var pos_x = soldado_width*4;
+    var pos_y = soldado_height*13;
 
     [pos_x, pos_y] = left_right(7,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(9,soldado_height,pos_x, pos_y,fila);
@@ -408,8 +408,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
     tamanho = 10;
     fila=[[tamanho,0]];
-    pos_x = 1140;
-    pos_y = 780;
+    pos_x = soldado_width*19;
+    pos_y = soldado_height*13;
 
     [pos_x, pos_y] = right_left(7,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(9,soldado_height,pos_x, pos_y,fila);
@@ -444,8 +444,8 @@ function carregaCenarios(soldado_width, soldado_height){
     velocidade = 20;
 
     fila=[[tamanho,0]];
-    pos_x = 480;
-    pos_y = 480;
+    pos_x = soldado_width*8;
+    pos_y = soldado_height*8;
     [pos_x, pos_y] = up_down(5,soldado_height,pos_x, pos_y,fila);
     [pos_x, pos_y] = right_left(5,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(5,soldado_height,pos_x, pos_y,fila);
@@ -454,8 +454,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
     tamanho = 25;
     fila=[[tamanho,0]];
-    pos_x = 960;
-    pos_y = 240;
+    pos_x = soldado_width*16;
+    pos_y = soldado_height*4;
     [pos_x, pos_y] = up_down(3,soldado_height,pos_x, pos_y,fila);
     [pos_x, pos_y] = right_left(11,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(3,soldado_height,pos_x, pos_y,fila);
@@ -464,8 +464,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
     tamanho = 7;
     fila=[[tamanho,0]];
-    pos_x = 1200;
-   pos_y = 480;
+    pos_x = soldado_width*20;
+   pos_y = soldado_height*8;
     [pos_x, pos_y] = up_down(3,soldado_height,pos_x, pos_y,fila);
     [pos_x, pos_y] = left_right(5,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(3,soldado_height,pos_x, pos_y,fila);
@@ -499,8 +499,8 @@ function carregaCenarios(soldado_width, soldado_height){
     filas = [];
     tamanho = 10;
     var fila=[[tamanho,0]];
-    pos_x = 480;
-    pos_y = 780;
+    pos_x = soldado_width*8;
+    pos_y = soldado_height*13;
 
     [pos_x, pos_y] = left_right(17,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(1,soldado_height,pos_x, pos_y,fila);
@@ -510,8 +510,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
 
     var fila=[[tamanho,0]];
-    pos_x = 600;
-    pos_y = 180;
+    pos_x = soldado_width*10;
+    pos_y = soldado_height*3;
 
     [pos_x, pos_y] = left_right(17,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(1,soldado_height,pos_x, pos_y,fila);
@@ -521,8 +521,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
     tamanho = 28;
     var fila=[[tamanho,0]];
-    pos_x = 600;
-    pos_y = 360;
+    pos_x = soldado_width*10;
+    pos_y = soldado_height*6;
 
     [pos_x, pos_y] = right_left(4,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = up_down(2,soldado_height,pos_x, pos_y,fila);
@@ -563,8 +563,8 @@ function carregaCenarios(soldado_width, soldado_height){
     filas = [];
     tamanho = 7;
     fila=[[tamanho,0]];
-    pos_x = 420;
-    pos_y = 840;
+    pos_x = soldado_width*7;
+    pos_y = soldado_height*14;
 
     
     [pos_x, pos_y] = down_up(4,soldado_height,pos_x, pos_y,fila);
@@ -578,8 +578,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
     tamanho = 7;
     fila=[[tamanho,0]];
-    pos_x = 480;
-    pos_y = 840;
+    pos_x = soldado_width*8;
+    pos_y = soldado_height*14;
 
     
     [pos_x, pos_y] = down_up(4,soldado_height,pos_x, pos_y,fila);
@@ -593,8 +593,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
     tamanho = 7;
     fila=[[tamanho,0]];
-    pos_x = 900;
-    pos_y = 660;
+    pos_x = soldado_width*15;
+    pos_y = soldado_height*11;
 
     
     [pos_x, pos_y] = right_left(5,soldado_width,pos_x, pos_y,fila);
@@ -607,8 +607,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
     tamanho = 7;
     fila=[[tamanho,0]];
-    pos_x = 900;
-    pos_y = 120;
+    pos_x = soldado_width*15;
+    pos_y = soldado_height*2;
 
     
     [pos_x, pos_y] = right_left(5,soldado_width,pos_x, pos_y,fila);
@@ -621,8 +621,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
     tamanho = 7;
     fila=[[tamanho,0]];
-    pos_x = 1260;
-    pos_y = 540;
+    pos_x = soldado_width*21;
+    pos_y = soldado_height*9;
 
     
     [pos_x, pos_y] = right_left(3,soldado_width,pos_x, pos_y,fila);
@@ -635,8 +635,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
     tamanho = 7;
     fila=[[tamanho,0]];
-    pos_x = 1320;
-    pos_y = 540;
+    pos_x = soldado_width*22;
+    pos_y = soldado_height*9;
 
     
     [pos_x, pos_y] = left_right(3,soldado_width,pos_x, pos_y,fila);
@@ -681,8 +681,8 @@ function carregaCenarios(soldado_width, soldado_height){
     filas = [];
     tamanho = 15;
     fila=[[tamanho,0]];
-    pos_x = 180;
-    pos_y = 780;
+    pos_x = soldado_width*3;
+    pos_y = soldado_height*13;
 
     [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(5,soldado_height,pos_x, pos_y,fila);
@@ -692,8 +692,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
     tamanho = 5;
     fila=[[tamanho,0]];
-    pos_x = 1440;
-    pos_y = 480;
+    pos_x = soldado_width*24;
+    pos_y = soldado_height*8;
 
     
     [pos_x, pos_y] = right_left(4,soldado_width,pos_x, pos_y,fila);
@@ -707,8 +707,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
     tamanho = 21;
     fila=[[tamanho,0]];
-    pos_x = 960;
-    pos_y = 780;
+    pos_x = soldado_width*16;
+    pos_y = soldado_height*13;
 
 	[pos_x, pos_y] = right_left(8,soldado_width,pos_x, pos_y,fila);
 	[pos_x, pos_y] = down_up(9,soldado_height,pos_x, pos_y,fila);
@@ -719,8 +719,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
 	tamanho = 7;
     fila=[[tamanho,0]];
-    pos_x = 1560;
-    pos_y = 300;
+    pos_x = soldado_width*26;
+    pos_y = soldado_height*5;
 
      [pos_x, pos_y] = right_left(4,soldado_width,pos_x, pos_y,fila);
      [pos_x, pos_y] = down_up(2,soldado_height,pos_x, pos_y,fila);
@@ -758,8 +758,8 @@ function carregaCenarios(soldado_width, soldado_height){
     filas = [];
     tamanho = 8;
     fila=[[tamanho,0]];
-    pos_x = 180;
-    pos_y = 780;
+    pos_x = soldado_width*3;
+    pos_y = soldado_height*13;
 
     [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(5,soldado_height,pos_x, pos_y,fila);
@@ -769,8 +769,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
     tamanho = 15;
     fila=[[tamanho,0]];
-    pos_x = 720;
-    pos_y = 480;
+    pos_x = soldado_width*12;
+    pos_y = soldado_height*8;
 
     [pos_x, pos_y] = right_left(4,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = up_down(5,soldado_height,pos_x, pos_y,fila);
@@ -780,8 +780,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
     tamanho = 20;
     fila=[[tamanho,0]];
-    pos_x = 1620;
-    pos_y = 240;
+    pos_x = soldado_width*27;
+    pos_y = soldado_height*4;
 
     
     [pos_x, pos_y] = right_left(5,soldado_width,pos_x, pos_y,fila);
@@ -798,8 +798,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
     tamanho = 10;
     fila=[[tamanho,0]];
-    pos_x = 1260;
-    pos_y = 360;
+    pos_x = soldado_width*21;
+    pos_y = soldado_height*6;
 
      [pos_x, pos_y] = right_left(13,soldado_width,pos_x, pos_y,fila);
      [pos_x, pos_y] = down_up(3,soldado_height,pos_x, pos_y,fila);
@@ -834,8 +834,8 @@ function carregaCenarios(soldado_width, soldado_height){
     filas = [];
     tamanho = 3;
     fila=[[tamanho,0]];
-    pos_x = 840;
-    pos_y = 780;
+    pos_x = soldado_width*14;
+    pos_y = soldado_height*13;
 
     [pos_x, pos_y] = right_left(3,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(1,soldado_height,pos_x, pos_y,fila);
@@ -846,8 +846,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
     tamanho = 3;
     fila=[[tamanho,0]];
-    pos_x = 900;
-    pos_y = 780;
+    pos_x = soldado_width*15;
+    pos_y = soldado_height*13;
 
     [pos_x, pos_y] = left_right(3,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(1,soldado_height,pos_x, pos_y,fila);
@@ -858,8 +858,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
 	tamanho = 3;
     fila=[[tamanho,0]];
-    pos_x = 1320;
-    pos_y = 780;
+    pos_x = soldado_width*22;
+    pos_y = soldado_height*13;
 
 	[pos_x, pos_y] = right_left(3,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(1,soldado_height,pos_x, pos_y,fila);
@@ -870,8 +870,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
 	tamanho = 3;
     fila=[[tamanho,0]];
-    pos_x = 1380;
-    pos_y = 780;
+    pos_x = soldado_width*23;
+    pos_y = soldado_height*13;
 
     [pos_x, pos_y] = left_right(3,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(1,soldado_height,pos_x, pos_y,fila);
@@ -885,8 +885,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
      tamanho = 3;
     fila=[[tamanho,0]];
-    pos_x = 840;
-    pos_y = 240;
+    pos_x = soldado_width*14;
+    pos_y = soldado_height*4;
 
     [pos_x, pos_y] = right_left(3,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(2,soldado_height,pos_x, pos_y,fila);
@@ -897,8 +897,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
     tamanho = 3;
     fila=[[tamanho,0]];
-    pos_x = 900;
-    pos_y = 240;
+    pos_x = soldado_width*15;
+    pos_y = soldado_height*4;
 
     [pos_x, pos_y] = left_right(3,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(2,soldado_height,pos_x, pos_y,fila);
@@ -909,8 +909,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
 	tamanho = 3;
     fila=[[tamanho,0]];
-    pos_x = 1320;
-    pos_y = 240;
+    pos_x = soldado_width*22;
+    pos_y = soldado_height*4;
 
 	[pos_x, pos_y] = right_left(3,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(2,soldado_height,pos_x, pos_y,fila);
@@ -921,8 +921,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
 	tamanho = 3;
     fila=[[tamanho,0]];
-    pos_x = 1380;
-    pos_y = 240;
+    pos_x = soldado_width*23;
+    pos_y = soldado_height*4;
 
     [pos_x, pos_y] = left_right(3,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(2,soldado_height,pos_x, pos_y,fila);
@@ -933,8 +933,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
      tamanho = 15;
     fila=[[tamanho,0]];
-    pos_x = 1440;
-    pos_y = 660;
+    pos_x = soldado_width*24;
+    pos_y = soldado_height*11;
 
     [pos_x, pos_y] = left_right(3,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(6,soldado_height,pos_x, pos_y,fila);
@@ -946,8 +946,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
      tamanho = 16;
     fila=[[tamanho,0]];
-    pos_x = 120;
-    pos_y = 480;
+    pos_x = soldado_width*2;
+    pos_y = soldado_height*8;
 
     [pos_x, pos_y] = left_right(5,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(5,soldado_height,pos_x, pos_y,fila);
@@ -958,8 +958,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
      tamanho = 9;
     fila=[[tamanho,0]];
-    pos_x = 180;
-    pos_y = 420;
+    pos_x = soldado_width*3;
+    pos_y = soldado_height*7;
 
     [pos_x, pos_y] = left_right(3,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(3,soldado_height,pos_x, pos_y,fila);
@@ -970,8 +970,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
       tamanho = 3;
     fila=[[tamanho,0]];
-    pos_x = 60;
-    pos_y = 720;
+    pos_x = soldado_width;
+    pos_y = soldado_height*12;
 
     [pos_x, pos_y] = left_right(2,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(2,soldado_height,pos_x, pos_y,fila);
@@ -983,8 +983,8 @@ function carregaCenarios(soldado_width, soldado_height){
     
     tamanho = 3;
     fila=[[tamanho,0]];
-    pos_x = 360;
-    pos_y = 720;
+    pos_x = soldado_width*6;
+    pos_y = soldado_height*12;
 
     [pos_x, pos_y] = right_left(2,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(2,soldado_height,pos_x, pos_y,fila);
@@ -1022,8 +1022,8 @@ function carregaCenarios(soldado_width, soldado_height){
     filas = [];
     tamanho = 8;
     fila=[[tamanho,0]];
-    pos_x = 720;
-    pos_y = 540;
+    pos_x = soldado_width*12;
+    pos_y = soldado_height*9;
 
     [pos_x, pos_y] = left_right(6,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(4,soldado_height,pos_x, pos_y,fila);
@@ -1034,8 +1034,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
     tamanho=18;
     fila=[[tamanho,0]];
-    pos_x = 660;
-    pos_y = 600;
+    pos_x = soldado_width*11;
+    pos_y = soldado_height*10;
 
     [pos_x, pos_y] = left_right(8,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(6,soldado_height,pos_x, pos_y,fila);
@@ -1047,8 +1047,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
     tamanho=25;
     fila=[[tamanho,0]];
-    pos_x = 600;
-    pos_y = 660;
+    pos_x = soldado_width*10;
+    pos_y = soldado_height*11;
 
     [pos_x, pos_y] = left_right(10,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(8,soldado_height,pos_x, pos_y,fila);
@@ -1059,8 +1059,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
      tamanho=30;
     fila=[[tamanho,0]];
-    pos_x = 540;
-    pos_y = 720;
+    pos_x = soldado_width*9;
+    pos_y = soldado_height*12;
 
     [pos_x, pos_y] = left_right(12,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(10,soldado_height,pos_x, pos_y,fila);
@@ -1072,8 +1072,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
      tamanho=8;
     fila=[[tamanho,0]];
-    pos_x = 120;
-    pos_y = 780;
+    pos_x = soldado_width*2;
+    pos_y = soldado_height*13;
 
     [pos_x, pos_y] = left_right(1,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(11,soldado_height,pos_x, pos_y,fila);
@@ -1087,8 +1087,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
      tamanho=8;
     fila=[[tamanho,0]];
-    pos_x = 240;
-    pos_y = 780;
+    pos_x = soldado_width*4;
+    pos_y = soldado_height*13;
 
     [pos_x, pos_y] = left_right(1,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(11,soldado_height,pos_x, pos_y,fila);
@@ -1101,8 +1101,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
      tamanho=8;
     fila=[[tamanho,0]];
-    pos_x = 360;
-    pos_y = 780;
+    pos_x = soldado_width*6;
+    pos_y = soldado_height*13;
 
     [pos_x, pos_y] = left_right(1,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(11,soldado_height,pos_x, pos_y,fila);
@@ -1139,8 +1139,8 @@ function carregaCenarios(soldado_width, soldado_height){
     filas = [];
     tamanho = 20;
     fila=[[tamanho,0]];
-    pos_x = 120;
-    pos_y = 780;
+    pos_x = soldado_width*2;
+    pos_y = soldado_height*13;
 
     [pos_x, pos_y] = left_right(1,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(11,soldado_height,pos_x, pos_y,fila);
@@ -1152,8 +1152,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
     tamanho = 10;
     fila=[[tamanho,0]];
-    pos_x = 360;
-    pos_y = 780;
+    pos_x = soldado_width*6;
+    pos_y = soldado_height*13;
 
     [pos_x, pos_y] = right_left(1,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(11,soldado_height,pos_x, pos_y,fila);
@@ -1165,8 +1165,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
     tamanho = 20;
     fila=[[tamanho,0]];
-    pos_x = 420;
-    pos_y = 780;
+    pos_x = soldado_width*7;
+    pos_y = soldado_height*13;
 
     [pos_x, pos_y] = left_right(1,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(11,soldado_height,pos_x, pos_y,fila);
@@ -1178,8 +1178,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
     tamanho = 10;
     fila=[[tamanho,0]];
-    pos_x = 660;
-    pos_y = 780;
+    pos_x = soldado_width*11;
+    pos_y = soldado_height*13;
 
     [pos_x, pos_y] = right_left(1,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(5,soldado_height,pos_x, pos_y,fila);
@@ -1192,8 +1192,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
     tamanho = 10;
     fila=[[tamanho,0]];
-    pos_x = 660;
-    pos_y = 420;
+    pos_x = soldado_width*11;
+    pos_y = soldado_height*7;
 
     [pos_x, pos_y] = right_left(1,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(5,soldado_height,pos_x, pos_y,fila);
@@ -1206,8 +1206,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
     tamanho = 10;
     fila=[[tamanho,0]];
-    pos_x = 840;
-    pos_y = 720;
+    pos_x = soldado_width*14;
+    pos_y = soldado_height*12;
 
     [pos_x, pos_y] = right_left(1,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(5,soldado_height,pos_x, pos_y,fila);
@@ -1220,8 +1220,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
     tamanho = 5;
     fila=[[tamanho,0]];
-    pos_x = 840;
-    pos_y = 360;
+    pos_x = soldado_width*14;
+    pos_y = soldado_height*6;
 
     [pos_x, pos_y] = right_left(1,soldado_width,pos_x, pos_y,fila);
     [pos_x, pos_y] = down_up(4,soldado_height,pos_x, pos_y,fila);
@@ -1254,12 +1254,12 @@ function carregaCenarios(soldado_width, soldado_height){
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ];
 
-    velocidade=5;
+    velocidade=1;
     filas = [];
     tamanho = 5;
     fila=[[tamanho,0]];
-    pos_x = 360;
-    pos_y = 300;
+    pos_x = soldado_width*6;
+    pos_y = soldado_height*5;
 
 
     [pos_x, pos_y] = right_left(3,soldado_width,pos_x, pos_y,fila);
@@ -1273,8 +1273,8 @@ function carregaCenarios(soldado_width, soldado_height){
     velocidade=7;
     tamanho = 5;
     fila=[[tamanho,0]];
-    pos_x = 180;
-    pos_y = 480;
+    pos_x = soldado_width*3;
+    pos_y = soldado_height*8;
 
 
     [pos_x, pos_y] = left_right(3,soldado_width,pos_x, pos_y,fila);
@@ -1286,8 +1286,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
     tamanho = 5;
     fila=[[tamanho,0]];
-    pos_x = 180;
-    pos_y = 780;
+    pos_x = soldado_width*3;
+    pos_y = soldado_height*13;
 
 
     [pos_x, pos_y] = left_right(2,soldado_width,pos_x, pos_y,fila);
@@ -1300,8 +1300,8 @@ function carregaCenarios(soldado_width, soldado_height){
 
     tamanho = 5;
     fila=[[tamanho,0]];
-    pos_x = 360;
-    pos_y = 780;
+    pos_x = soldado_width*6;
+    pos_y = soldado_height*13;
 
 
     [pos_x, pos_y] = left_right(2,soldado_width,pos_x, pos_y,fila);
@@ -1314,8 +1314,8 @@ filas.push(fila);
 
         tamanho = 5;
     fila=[[tamanho,0]];
-    pos_x = 480;
-    pos_y = 360;
+    pos_x = soldado_width*8;
+    pos_y = soldado_height*6;
 
 
     [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
@@ -1329,8 +1329,8 @@ filas.push(fila);
 
         tamanho = 5;
     fila=[[tamanho,0]];
-    pos_x = 780;
-    pos_y = 360;
+    pos_x = soldado_width*13;
+    pos_y = soldado_height*6;
 
 
     [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
@@ -1344,24 +1344,8 @@ filas.push(fila);
 
         tamanho = 5;
     fila=[[tamanho,0]];
-    pos_x = 540;
-    pos_y = 600;
-
-
-    [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
-    [pos_x, pos_y] = down_up(1,soldado_height,pos_x, pos_y,fila);
-    [pos_x, pos_y] = right_left(4,soldado_width,pos_x, pos_y,fila);
-    [pos_x, pos_y] = up_down(1,soldado_height,pos_x, pos_y,fila);
-
-    filas.push(fila);
-
-
-
-
-        tamanho = 5;
-    fila=[[tamanho,0]];
-    pos_x = 600;
-    pos_y = 480;
+    pos_x = soldado_width*9;
+    pos_y = soldado_height*10;
 
 
     [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
@@ -1376,8 +1360,24 @@ filas.push(fila);
 
         tamanho = 5;
     fila=[[tamanho,0]];
-    pos_x = 540;
-    pos_y = 840;
+    pos_x = soldado_width*10;
+    pos_y = soldado_height*8;
+
+
+    [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = down_up(1,soldado_height,pos_x, pos_y,fila);
+    [pos_x, pos_y] = right_left(4,soldado_width,pos_x, pos_y,fila);
+    [pos_x, pos_y] = up_down(1,soldado_height,pos_x, pos_y,fila);
+
+    filas.push(fila);
+
+
+
+
+        tamanho = 5;
+    fila=[[tamanho,0]];
+    pos_x = soldado_width*9;
+    pos_y = soldado_height*14;
 
 
     [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
@@ -1392,8 +1392,8 @@ filas.push(fila);
 
         tamanho = 5;
     fila=[[tamanho,0]];
-    pos_x = 840;
-    pos_y = 840;
+    pos_x = soldado_width*14;
+    pos_y = soldado_height*14;
 
 
     [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
@@ -1406,8 +1406,8 @@ filas.push(fila);
 
 	tamanho = 5;
     fila=[[tamanho,0]];
-    pos_x = 1140;
-    pos_y = 840;
+    pos_x = soldado_width*19;
+    pos_y = soldado_height*14;
 
 
     [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
@@ -1420,8 +1420,8 @@ filas.push(fila);
 
     tamanho = 5;
     fila=[[tamanho,0]];
-    pos_x = 1020;
-    pos_y = 540;
+    pos_x = soldado_width*17;
+    pos_y = soldado_height*9;
 
 
     [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
@@ -1433,8 +1433,8 @@ filas.push(fila);
 
      tamanho = 5;
     fila=[[tamanho,0]];
-    pos_x = 1140;
-    pos_y = 360;
+    pos_x = soldado_width*19;
+    pos_y = soldado_height*6;
 
 
     [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
@@ -1446,8 +1446,8 @@ filas.push(fila);
 
     tamanho = 5;
     fila=[[tamanho,0]];
-    pos_x = 1440;
-    pos_y = 780;
+    pos_x = soldado_width*24;
+    pos_y = soldado_height*13;
 
 
     [pos_x, pos_y] = left_right(4,soldado_width,pos_x, pos_y,fila);
