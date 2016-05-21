@@ -460,16 +460,16 @@ class Cenario{
         if (jogador.estado == 0) {
             switch (dir) {
                 case "up":
-                    jogador.draw(ctxJogador, soldado_width, soldado_height, imagens[0][countUp]);
+                    jogador.draw(ctxJogador, soldado_width, soldado_height, imagensJogador[0][countUp]);
                     break;
                 case "left":
-                    jogador.draw(ctxJogador, soldado_width, soldado_height, imagens[2][countLeft]);
+                    jogador.draw(ctxJogador, soldado_width, soldado_height, imagensJogador[2][countLeft]);
                     break;
                 case "down":
-                    jogador.draw(ctxJogador, soldado_width, soldado_height, imagens[3][countDown]);
+                    jogador.draw(ctxJogador, soldado_width, soldado_height, imagensJogador[3][countDown]);
                     break;
                 case "right":
-                    jogador.draw(ctxJogador, soldado_width, soldado_height, imagens[1][countRight]);
+                    jogador.draw(ctxJogador, soldado_width, soldado_height, imagensJogador[1][countRight]);
                     break;
 
             }
