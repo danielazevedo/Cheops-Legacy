@@ -9,7 +9,7 @@
 
 
 function main() {
-	//playSound();
+	playSound();
 	var leftButton=window.document.getElementById("left");
 	var rightButton=window.document.getElementById("right");
 	var firstButton= window.document.getElementById("first");

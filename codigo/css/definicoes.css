@@ -23,10 +23,9 @@ select{
   left: 44%;
   height: 4vh;
   width: 12%;
-  position: relative;
-  margin: auto;
+  position: absolute;
   text-align: center;
-    margin-top: 10vh;
+    margin-top: 15vh;
 }
 button{
   width: 18%;
@@ -48,11 +47,7 @@ button{
 }
 
 
-article{
-  margin-left: 35vw;
-  margin-top: 15vh;
-  height: 20vh;
-}
+
 
 nav{
     margin-left: 36vw;
@@ -70,7 +65,7 @@ p{
     
     margin-left: 10%;
     float: left;
-    margin-top: 10vh;
+    margin-top: 60vh;
     width: 7%;
     height: 5vh;
     background: url("../imagens/azul.png") no-repeat center;
