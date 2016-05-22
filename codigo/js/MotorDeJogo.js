@@ -135,6 +135,7 @@ function main() {
         imagensJogador=ev.imagensJogador;
         elementos=ev.elementos;
         //iniciar a animação
+        selectSound(sessionStorage.nivel_atual);
         stuffAfterMain(imagens, imagensJogador, elementos);
     }
 
