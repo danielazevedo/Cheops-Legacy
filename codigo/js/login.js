@@ -33,6 +33,7 @@ function main() {
 			join_pass.style.color = 'green';
 	}
 
+
 	join_user.addEventListener('change', checkName);
 	join_pass.addEventListener('input', pass_sec);
 
@@ -50,10 +51,15 @@ function join(){
 	document.getElementById('join_pass').value="";
 	document.getElementById('email').value="";
 
-	/*if(verify_email(email) == 0 || verify_data(join_user, join_pass) == 0){
-		alert("Dados inválidos");
-		return ;
-}*/
+
+	if( verify_data( join_user, join_pass ) == 0)
+		return;
+	if ( verify_email( email ) == 0 ) {
+		alert( 'Email invalido' );
+		return;
+	}
+
+
 	var type = "register";
 
     var params = "name=" + join_user + "&email=" + email + "&password=" + join_pass;
@@ -86,6 +92,8 @@ function join(){
 
 
 }
+
+
 function login(ev){
 	ev.preventDefault()
 	var log_user=document.getElementById('log_user').value;
@@ -132,11 +140,12 @@ function login(ev){
 }
 function checkName(ev) {
     var name = ev.target.value;
-    console.log(name);
     
     
     var type = "checkName";
     var params = "name=" + name;
+
+    if( name.length > 0) {
 
     var cnh = function(ev) {
         document.removeEventListener(type, cnh);
@@ -150,17 +159,21 @@ function checkName(ev) {
     }
     document.addEventListener(type, cnh);
     sendData(params, url_check_name, type);
-    }
+	}
+
+}
 
 
 function verify_data( join_user, join_pass ) {
-	if( join_user.length > 20 || join_user.length == 0)
-		return 0;
-	if( join_user.charAt(0).equals(" ") || join_user.charAt( join_user.length - 1 ).equals( " " ) || join_user.charAt( join_user.getIndex( " " ) +1 ).equals( " " ) )
-		return 0;
-	if( !(6<join_pass.length < 20) )
-		return 0;
 
+	if( join_user.length == 0 || join_pass.length == 0 ) {
+		alert( 'Preencha todos os dados' );
+		return 0;
+	}
+	if( join_user.charAt(0)==" " || join_user.charAt( join_user.length - 1 ) == " " || join_user.charAt( join_user.indexOf( " " ) +1 ) == ' ' ) {
+		alert( 'Tenha em atenção o uso de espaços' );
+		return 0;
+	}
 	return 1;
 }
 
@@ -177,38 +190,9 @@ function verify_email( email ) {
 		"safe-mail.net", "wow.com" /* AOL */, "ygm.com" /* AOL */, "ymail.com" /* Yahoo */, "zoho.com", "fastmail.fm",
 		"yandex.com",
 
-		/* United States ISP domains */
-		"bellsouth.net", "charter.net", "comcast.net", "cox.net", "earthlink.net", "juno.com",
-
-		/* British ISP domains */
-		"btinternet.com", "virginmedia.com", "blueyonder.co.uk", "freeserve.co.uk", "live.co.uk",
-		"ntlworld.com", "o2.co.uk", "orange.net", "sky.com", "talktalk.co.uk", "tiscali.co.uk",
-		"virgin.net", "wanadoo.co.uk", "bt.com",
-
-		/* Domains used in Asia */
-		"sina.com", "qq.com", "naver.com", "hanmail.net", "daum.net", "nate.com", "yahoo.co.jp", "yahoo.co.kr", "yahoo.co.id", "yahoo.co.in", "yahoo.com.sg", "yahoo.com.ph",
-
-		/* French ISP domains */
-		"hotmail.fr", "live.fr", "laposte.net", "yahoo.fr", "wanadoo.fr", "orange.fr", "gmx.fr", "sfr.fr", "neuf.fr", "free.fr",
-
-		/* German ISP domains */
-		"gmx.de", "hotmail.de", "live.de", "online.de", "t-online.de" /* T-Mobile */, "web.de", "yahoo.de",
-
-		/* Russian ISP domains */
-		"mail.ru", "rambler.ru", "yandex.ru", "ya.ru", "list.ru",
-
-		/* Belgian ISP domains */
-		"hotmail.be", "live.be", "skynet.be", "voo.be", "tvcablenet.be", "telenet.be",
-
-		/* Argentinian ISP domains */
-		"hotmail.com.ar", "live.com.ar", "yahoo.com.ar", "fibertel.com.ar", "speedy.com.ar", "arnet.com.ar",
-
-		/* Domains used in Mexico */
-		"hotmail.com", "gmail.com", "yahoo.com.mx", "live.com.mx", "yahoo.com", "hotmail.es", "live.com", "hotmail.com.mx", "prodigy.net.mx", "msn.com"
 	];
-	if( email.indexOf( "@" ) == -1 || email.indexOf( "@" ) >= ( email.length - 2 ) || email.indexOf( "@" ) != email.lastIndexOf( "@" ) )
-		return 0;
-	if( domains.indexOf( email.substr( email.indexOf( "@" ) ) ) == -1 )
+	
+	if( domains.indexOf( email.substr( email.indexOf( "@" )+1 ) ) == -1 )
 		return 0;
 	return 1;
 }
