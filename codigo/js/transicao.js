@@ -11,15 +11,26 @@ function main(){
 
     var nivel = sessionStorage.nivel_atual;
     var num = nivel%2;
-    document.getElementById("nivel").innerHTML = "Nivel " + nivel;
+    nivel = 10;
+    if(nivel == 10){
+        document.getElementById("nivel").innerHTML = "Parabéns, encontrou o túmulo de Cheops, e por isso passou o jogo!";
+        document.body.style.background = "url(../imagens/ganhou.jpg) no-repeat center center fixed";
+        document.body.style.backgroundSize = "100% 100%";    
+        setTimeout(function(){
 
-    document.body.style.background = "url(../imagens/corredor"+num+".png) no-repeat center center fixed";
-    document.body.style.backgroundSize = "100% 100%";
+            location.href = "../html/Main.html";
 
-    setTimeout(function(){
+        },8000);
+    }
+    else{
+        document.getElementById("nivel").innerHTML = "Nivel " + nivel;
+        document.body.style.background = "url(../imagens/corredor"+num+".png) no-repeat center center fixed";
+        document.body.style.backgroundSize = "100% 100%";
 
-        location.href = "../html/MotorDeJogo.html";
+        setTimeout(function(){
 
-    },2000);
+            location.href = "../html/MotorDeJogo.html";
 
+        },2000);
+    }
 }

@@ -122,7 +122,8 @@ class Jogador{
         var segundos = tempo.segundos + tempo.minutos*60;
         console.log(nivel);
         sessionStorage.nivel_atual = nivel;
-        sessionStorage.nivel = nivel;
+        if(nivel > sessionStorage.nivel)
+            sessionStorage.nivel = nivel;
         sessionStorage.vidas = this.n_vidas;
 
         //update
