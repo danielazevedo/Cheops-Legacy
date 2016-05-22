@@ -449,6 +449,16 @@ class Cenario{
                     countLeft = mod(countLeft + 1, 9);
                 countDown = 0, countUp = 0, countRight = 0;
                 break;
+            case 65:
+                x -= jogador_width;
+                dir = "left";
+                //para nao começar no 1
+                if (countLeft + 1 == 9)
+                    countLeft = 1;
+                else
+                    countLeft = mod(countLeft + 1, 9);
+                countDown = 0, countUp = 0, countRight = 0;
+                break;
             //up
             case 38:
                 dir = "up";
@@ -459,7 +469,15 @@ class Cenario{
                     countUp = mod(countUp + 1, 9);
                 countDown = 0, countLeft = 0, countRight = 0;
                 break;
-
+            case 87:
+                dir = "up";
+                y -= jogador_height;
+                if (countUp + 1 == 9)
+                    countUp = 1;
+                else
+                    countUp = mod(countUp + 1, 9);
+                countDown = 0, countLeft = 0, countRight = 0;
+                break;
             //right
             case 39:
                 dir = "right";
@@ -470,8 +488,26 @@ class Cenario{
                     countRight = mod(countRight + 1, 9);
                 countDown = 0, countUp = 0, countLeft = 0;
                 break;
+            case 68:
+                dir = "right";
+                x += jogador_width;
+                if (countRight + 1 == 9)
+                    countRight = 1;
+                else
+                    countRight = mod(countRight + 1, 9);
+                countDown = 0, countUp = 0, countLeft = 0;
+                break;
             //down
             case 40:
+                dir = "down";
+                y += jogador_height;
+                if (countDown + 1 == 9)
+                    countDown = 1;
+                else
+                    countDown = mod(countDown + 1, 9);
+                countUp = 0, countLeft = 0, countRight = 0;
+                break;
+            case 83:
                 dir = "down";
                 y += jogador_height;
                 if (countDown + 1 == 9)

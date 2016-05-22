@@ -242,7 +242,7 @@ function init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas, ctxSold
     document.onkeydown = function (ev) {
        	
       	
-        if(ev.keyCode==37 || ev.keyCode==38 ||ev.keyCode==39 ||ev.keyCode==40) {
+        if(ev.keyCode==37 || ev.keyCode==38 ||ev.keyCode==39 ||ev.keyCode==40 ||ev.keyCode==65 ||ev.keyCode==87 ||ev.keyCode==68 ||ev.keyCode==83) {
             if (flag == 0) {
                 startCrono(jogador, count, cenario.nivel);
                 flag = 1;
