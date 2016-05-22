@@ -11,7 +11,6 @@ function main(){
 
     var nivel = sessionStorage.nivel_atual;
     var num = nivel%2;
-    nivel = 10;
     if(nivel == 10){
         document.getElementById("nivel").innerHTML = "Parabéns, encontrou o túmulo de Cheops, e por isso passou o jogo!";
         document.body.style.background = "url(../imagens/ganhou.jpg) no-repeat center center fixed";
