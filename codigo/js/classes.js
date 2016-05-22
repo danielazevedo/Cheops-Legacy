@@ -5,6 +5,73 @@ function  mod(n, m) {
     return ((n % m) + m) % m;
 }
 
+const url_updateVidas= "http://159.203.118.149/serverside/user/updateNvidas.php";
+
+function update(){
+    var type = "update";
+    
+
+
+    var Handler = function(ev) {
+        document.removeEventListener(type, Handler);
+
+
+        if (ev.response["success"] == 1) {
+            
+            console.log("success");
+            
+        } else {
+            //alert("Username ou Password inválidos");
+            console.log("erro");
+        }
+    }
+    document.addEventListener(type, Handler);
+    send_Data(url_updateVidas, type);
+
+}
+
+
+function send_Data(url, type) {
+    var XHR = new XMLHttpRequest();
+    
+    
+    var params = "nome=" +  sessionStorage.name + "&vidas=" +  sessionStorage.vidas;
+    XHR.onreadystatechange = function() {
+        if (XHR.readyState === 4 && XHR.status === 200) {
+            var response = XHR.response;
+            console.log(response);
+            var ev = new Event(type);
+            ev.response = response;
+            document.dispatchEvent(ev);
+
+        }
+    }
+    XHR.open('POST', url, true);
+    XHR.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=utf-8");
+    XHR.setRequestHeader("Access-Control-Allow-Origin", "*");
+    XHR.setRequestHeader("Access-Control-Allow-Credentials", "true");
+    XHR.responseType = "json";
+    XHR.send(params);
+}
+
+function checkScore(nivel, min, seg) {
+    var str=localStorage.getItem("lvl"+nivel);
+    if (score){
+        var score=str.split(" ")[1].split(":");
+        if (compareTime(min, seg, parseInt(score[0]),parseInt(score[1]))>0){
+            localStorage.setItem("lvl"+nivel,sessionStorage.name+" "+min+":"+seg+" ");
+        }
+    }else{
+        localStorage.setItem("lvl"+nivel,sessionStorage.name+" "+min+":"+seg+" ");
+    }
+}
+ 
+//if A<B return<0, if A>B return>0 else return==0;
+function compareTime (minA, segA, minB, segB){
+    return (minA*100+segA-minB*100-segB)
+}
+
+
 class Tempo{
     constructor(s, m){
         this.segundos=s;
@@ -40,7 +107,7 @@ class Jogador{
         this.tempo=new Tempo(0,0);
         this.estado=0;
         this.n_fila=-1;
-        this.tempo_fora=20;
+        this.tempo_fora=5;
         this.key=0;
         this.elementos=elementos;
     }
@@ -50,19 +117,26 @@ class Jogador{
     }
 
     nextLevel(nivel, tempo){
+        checkScore(nivel,this.tempo.minutos,this.tempo.segundos);
         nivel++;
         var segundos = tempo.segundos + tempo.minutos*60;
-        localStorage.setItem("nivel",nivel);
-        localStorage.setItem("vidas",this.n_vidas);
+        console.log(nivel);
+        sessionStorage.nivel_atual = nivel;
+        sessionStorage.nivel = nivel;
+        sessionStorage.vidas = this.n_vidas;
+
+        //update
         location.href = "../html/Transicao.html";
     }
 
     restartLevel(nivel){
 
         this.n_vidas--;
-        console.log("vidas-",this.n_vidas, nivel);
-        localStorage.setItem("nivel",nivel);
-        localStorage.setItem("vidas",this.n_vidas);
+        sessionStorage.vidas= parseInt(sessionStorage.vidas) - 1;
+        //send_Data(url_updateVidas);
+        
+        update();   
+    
         updateSound();
         location.href = "../html/MotorDeJogo.html";
 
@@ -70,8 +144,9 @@ class Jogador{
 
     GameOver(nivel){
 
-        localStorage.setItem("nivel",nivel);
-        localStorage.setItem("vidas","3");
+        sessionStorage.nivel_atual = nivel;
+        sessionStorage.vidas = 3;
+        //update
         resetSound();
         location.href = "../html/Main.html";
 
@@ -266,53 +341,36 @@ class Cenario{
 
     iniciaCenario(ctx,mapa_x, mapa_y, soldados_width, soldados_heigth, filas, jogador, ctxSoldados,elementos, ctxJogador, imagens, imagensJogador){
         var counter=0;//contador que serve para controlar os fps na funcao animLoop
-
+        var health = 3;
+        var slower = 4;
+        var freezer = 5;
+        var remover = 6;
         for (var i=0; i<mapa_y; i++){
             for (var k=0;k<mapa_x; k++){
 
-              /*  if (this.mapa[i][k]==0) {//0==parede
+                if (this.mapa[i][k]==health) {
 
-                    ctx.drawImage(elementos[1], k * soldados_width, i * soldados_heigth, soldados_width, soldados_heigth);
-
-                    console.log( k * soldados_width, i * soldados_heigth, soldados_width, soldados_heigth);
-
-                }
-
-
-                else if (this.mapa[i][k]!=0) {//0==parede
-
-                    ctx.drawImage(elementos[2], k * soldados_width, i * soldados_heigth, soldados_width, soldados_heigth);
-
-                    console.log( k * soldados_width, i * soldados_heigth, soldados_width, soldados_heigth);
-
-                }
-
-*/
-
-
-                if (this.mapa[i][k]==3) {//0==parede
-
-                    ctx.drawImage(elementos[0], k * soldados_width, i * soldados_heigth, soldados_width, soldados_heigth);
+                    ctx.drawImage(elementos[0][0], k * soldados_width, i * soldados_heigth, soldados_width, soldados_heigth);
 
 
                 }
 
-                else if (this.mapa[i][k]==4) {//0==parede
+                else if (this.mapa[i][k]==slower) {
 
-                    ctx.drawImage(elementos[3], k * soldados_width, i * soldados_heigth, soldados_width, soldados_heigth);
+                    ctx.drawImage(elementos[1][0], k * soldados_width, i * soldados_heigth, soldados_width, soldados_heigth);
 
 
                 }
 
 
-                else if (this.mapa[i][k]==5) {//0==parede
+                else if (this.mapa[i][k]==freezer) {
 
-                    ctx.drawImage(elementos[4], k * soldados_width, i * soldados_heigth, soldados_width, soldados_heigth);
+                    ctx.drawImage(elementos[2][0], k * soldados_width, i * soldados_heigth, soldados_width, soldados_heigth);
 
                 }
-                else if (this.mapa[i][k]==6) {//0==parede
+                else if (this.mapa[i][k]==remover) {
 
-                    ctx.drawImage(elementos[5], k * soldados_width, i * soldados_heigth, soldados_width, soldados_heigth);
+                    ctx.drawImage(elementos[3][0], k * soldados_width, i * soldados_heigth, soldados_width, soldados_heigth);
 
                 }
 
@@ -335,23 +393,23 @@ class Cenario{
 
 
         //cria o movimento das filas
-        this.animLoop(ctxSoldados,soldados_width,soldados_heigth,counter,jogador, ctxJogador, imagens, imagensJogador);
+        this.animLoop(ctxSoldados,soldados_width,soldados_heigth,counter,jogador, ctxJogador, imagens, imagensJogador, elementos, ctx);
 
     }
     //funcao que cria o movimento da fila, basicamente chamama funcao movimenta_soldados de x em x fps
 
 
-    animLoop(ctx,soldados_width,soldados_heigth, counter,jogador, ctxJogador, imagens, imagensJogador){
+    animLoop(ctxSoldados,soldados_width,soldados_heigth, counter,jogador, ctxJogador, imagens, imagensJogador, elementos, ctx){
 
         var velocidadeJogador=10;
         var framesToSkip=this.velocidade;
         var This=this;
         var anim = function() {
 
-            This.animLoop(ctx,soldados_width,soldados_heigth,counter,jogador, ctxJogador, imagens, imagensJogador);
+            This.animLoop(ctxSoldados,soldados_width,soldados_heigth,counter,jogador, ctxJogador, imagens, imagensJogador, elementos, ctx);
         }
         if (mod(counter,velocidadeJogador)==1){
-            this.movimenta_jogador(jogador, soldados_width, soldados_heigth, ctxJogador,imagens, ctx, imagensJogador);
+            this.movimenta_jogador(jogador, soldados_width, soldados_heigth, ctxJogador,imagens, ctxSoldados, imagensJogador,elementos, ctx);
         }
         if (counter < framesToSkip) {
             counter++;
@@ -361,12 +419,12 @@ class Cenario{
 
         var reqID = window.requestAnimationFrame(anim);
         counter=0;
-        this.movimenta_soldados(ctx,soldados_width,soldados_heigth,jogador);
+        this.movimenta_soldados(ctxSoldados,soldados_width,soldados_heigth,jogador);
         
     }
 
     //handler das setas
-    movimenta_jogador(jogador, soldado_width, soldado_height, ctxJogador, imagens, ctx, imagensJogador) {
+    movimenta_jogador(jogador, soldado_width, soldado_height, ctxJogador, imagens, ctxSoldados, imagensJogador, elementos, ctxBack) {
         var cenario=this;
         var key = jogador.key;
         var x = jogador.personagem.x;
@@ -431,7 +489,7 @@ class Cenario{
         jogador.estado = 0;
         cenario.filas[jogador.n_fila].tamanho--;
         jogador.n_fila=-1;
-        ctx.clearRect(jogador.personagem.x, jogador.personagem.y, soldado_width, soldado_height);
+        ctxSoldados.clearRect(jogador.personagem.x, jogador.personagem.y, soldado_width, soldado_height);
 
         for(var i=0;i<cenario.filas.length;i++){
             var fila = cenario.filas[i];
@@ -440,13 +498,13 @@ class Cenario{
 
 
     }
-    var res = verifica_posicao(jogador, x, y, cenario.filas, soldado_width, soldado_height, ctx, cenario, ctxJogador);
+    var res = verifica_posicao(jogador, x, y, cenario.filas, soldado_width, soldado_height, ctxSoldados, cenario, ctxJogador, elementos, ctxBack);
 
 
     if( res == 1 || res == 2) {
         if (res == 2) {
             console.log("PERDEU");
-            jogador.restart(nivel, ctx, ctxJogador);
+            jogador.restart(nivel);
         }
 
         jogador.personagem.setPosicao(x, y);
@@ -483,11 +541,7 @@ class Cenario{
     //apaga o ultimo elemento do fila e desenha o proximo movimento da fila
     movimenta_soldados(ctx,soldados_width, soldados_heigth,jogador){
 
-       /* var cw = ctx.canvas.width;
-        var ch = ctx.canvas.height;
 
-        apagar canvas
-*/
         for (let j=0; j<this.filas.length;j++){
             var fila= this.filas[j];
 
@@ -502,12 +556,4 @@ class Cenario{
     }
 
 }
-/*
-class Ranking{
-    constructor(user, jogador, nivel){
-        this.user=user;
-        this.jogador=jogador;
-        this.nivel=nivel;
-    }
 
-}*/

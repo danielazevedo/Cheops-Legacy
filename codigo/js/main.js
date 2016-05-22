@@ -15,7 +15,7 @@ function main() {
 	var firstButton= window.document.getElementById("first");
 	var secondButton= window.document.getElementById("second");
 	var thirdButton= window.document.getElementById("third");
-	var bbutton=document.getElementById('logout');
+	var bbutton=window.document.getElementById('logout');
 
 
 	var array=["Leaderboard","Ajuda","Jogar","Definições","Créditos"];

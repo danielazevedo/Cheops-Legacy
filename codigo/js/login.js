@@ -6,7 +6,7 @@
 	window.addEventListener("load", main);
 }());
 
-
+const url_check_name = "http://159.203.118.149/serverside/user/check_name.php";
 const url_register = "http://159.203.118.149/serverside/user/register.php";
 const url_login = "http://159.203.118.149/serverside/user/login.php";
 
@@ -33,6 +33,7 @@ function main() {
 			join_pass.style.color = 'green';
 	}
 
+	join_user.addEventListener('change', checkName);
 	join_pass.addEventListener('input', pass_sec);
 
 }
@@ -48,20 +49,38 @@ function join(){
 	document.getElementById('join_user').value="";
 	document.getElementById('join_pass').value="";
 	document.getElementById('email').value="";
-	
-		
+
+	/*if(verify_email(email) == 0 || verify_data(join_user, join_pass) == 0){
+		alert("Dados inválidos");
+		return ;
+}*/
 	var type = "register";
-    var params = "name=" + join_user + "&email=" + email + "&password=" + join_pass.value;
+
+    var params = "name=" + join_user + "&email=" + email + "&password=" + join_pass;
 
     var registerHandler = function(ev) {
         if (ev.response["success"] == 1) {
+
             alert("registado com sucesso");
-            updateSound();
+            //	updateSound();
+            sessionStorage.type = "user";
+            sessionStorage.name = join_user;
+            sessionStorage.password = join_pass;
+            sessionStorage.email = email;
+            sessionStorage.nivel = 1;
+            sessionStorage.Musica = 1;
+            sessionStorage.teclas = 1;
+            sessionStorage.Volume_musica = 1;
+            sessionStorage.vidas = 3;
+            sessionStorage.freezer = 0;
+            sessionStorage.speeder = 0;
+            sessionStorage.killer = 0;
             location.href = "../html/Main.html";
         } else {
             alert("Problemas no registo");
         }
     }
+    
     document.addEventListener(type, registerHandler);
     sendData(params, url_register, type);
 
@@ -94,6 +113,7 @@ function login(ev){
             sessionStorage.freezer = ev.response["freezer"];
             sessionStorage.speeder = ev.response["speeder"];
             sessionStorage.killer = ev.response["killer"];
+            alert("Login feito com sucesso");
 	   		updateSound();
             location.href = "../html/Main.html";
 
@@ -102,6 +122,7 @@ function login(ev){
             
             
         } else {
+        	alert("Username ou Password inválidos");
             console.log("erro");
         }
     }
@@ -109,6 +130,27 @@ function login(ev){
     sendData(params, url_login, type);
 
 }
+function checkName(ev) {
+    var name = ev.target.value;
+    console.log(name);
+    
+    
+    var type = "checkName";
+    var params = "name=" + name;
+
+    var cnh = function(ev) {
+        document.removeEventListener(type, cnh);
+        console.log(ev.response);
+        if (ev.response["success"] == 1) {
+            alert("Username ja usado");
+        } else {
+            
+            alert("Username Válido");
+        }
+    }
+    document.addEventListener(type, cnh);
+    sendData(params, url_check_name, type);
+    }
 
 
 function verify_data( join_user, join_pass ) {
@@ -164,9 +206,9 @@ function verify_email( email ) {
 		/* Domains used in Mexico */
 		"hotmail.com", "gmail.com", "yahoo.com.mx", "live.com.mx", "yahoo.com", "hotmail.es", "live.com", "hotmail.com.mx", "prodigy.net.mx", "msn.com"
 	];
-	if( email.getIndex( "@" ) == -1 || email.getIndex( "@" ) >= ( email.length - 2 ) || email.getIndex( "@" ) != email.lastIndexOf( "@" ) )
+	if( email.indexOf( "@" ) == -1 || email.indexOf( "@" ) >= ( email.length - 2 ) || email.indexOf( "@" ) != email.lastIndexOf( "@" ) )
 		return 0;
-	if( domains.getIndex( email.substr( email.getIndex( "@" ) ) ) == -1 )
+	if( domains.indexOf( email.substr( email.indexOf( "@" ) ) ) == -1 )
 		return 0;
 	return 1;
 }

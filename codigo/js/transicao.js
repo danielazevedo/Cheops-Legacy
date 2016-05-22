@@ -9,12 +9,12 @@
 
 function main(){
 
-    var value = getCookie("nivel");
-    if (value != "nao existe") {
-        var nivel = value[0];
-    }
-
+    var nivel = sessionStorage.nivel_atual;
+    var num = nivel%2;
     document.getElementById("nivel").innerHTML = "Nivel " + nivel;
+
+    document.body.style.background = "url(../imagens/corredor"+num+".png) no-repeat center center fixed";
+    document.body.style.backgroundSize = "100% 100%";
 
     setTimeout(function(){
 
@@ -22,20 +22,4 @@ function main(){
 
     },2000);
 
-}
-
-function getCookie(username) {
-    var name = username + "=";
-    var cookie;
-    var c = document.cookie.split(';');
-    for (let i = 0; i < c.length; i++) {
-        cookie = c[i];
-        while (cookie.charAt(0) == ' ') {//avança espaços em branco
-            cookie = cookie.substring(1);
-        }
-        if (cookie.indexOf(name) == 0) {//se existir o username na cookie, retorna o valor
-            return cookie.substring(name.length, cookie.length);
-        }
-    }
-    return "nao existe";
 }

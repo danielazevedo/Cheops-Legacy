@@ -21,20 +21,26 @@ function main() {
     var b8 = document.getElementsByTagName('button')[7];
     var b9 = document.getElementsByTagName('button')[8];
     var b10 = document.getElementsByTagName('button')[9];
-
-
+    
+    var nivelMax = sessionStorage.nivel;
+    var opacDisabled = 0.5;
+    
+    for(var i=nivelMax; i<10; i++){
+            document.getElementsByTagName('button')[i].style.opacity=opacDisabled;
+            document.getElementsByTagName('button')[i].disabled=true;
+        }
 
     var change=function(ev) {
         var v = ev.target.value;
         console.log(v);
+        
         updateSound();
-        if (v != "back"){
-            localStorage.setItem("vidas","3");
-            localStorage.setItem("nivel",v);
+        if (v == "1" || v == "2" || v == "3" || v == "4" || v == "5" || v == "6" || v == "7" || v == "8" || v == "9" || v == "10"){
+            sessionStorage.nivel_atual = v;
             location.href = "../html/MotorDeJogo.html";
 
     }
-        else {
+        else if(v =="back") {
 
             location.href = "../html/Main.html";
         }

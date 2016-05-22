@@ -15,19 +15,17 @@ function carregaImagens(){
 	var totLoad=72;
 	var imagensJogador=new Array([], [], [], []);
 	var imagensSoldados=new Array ([], [], [], []);
-    var elementos=new Array();
-    for (let i=0; i<6; i++){
+    var elementos= new Array ([],[],[],[]);
+    for (let i=0; i<4; i++){
         var img=new Image();
         img.addEventListener("load", imgLoadedHandlerJogador);
         img.id="el";
-        elementos.push(img);
+        elementos[i].push(img);
     }
-    elementos[0].src = "../imagens/heal.png";
-    elementos[1].src = "../imagens/ppp.png";
-    elementos[2].src = "../imagens/ground.jpg";
-    elementos[3].src = "../imagens/runner.png";
-    elementos[4].src = "../imagens/stop_time.png";
-    elementos[5].src = "../imagens/remove.png";
+    elementos[0][0].src = "../imagens/heal.png";
+    elementos[1][0].src = "../imagens/runner.png";
+    elementos[2][0].src = "../imagens/stop_time.png";
+    elementos[3][0].src = "../imagens/remove.png";
 	for(let i=0; i<9;i++){
 		
 		var img = new Image();
@@ -160,8 +158,14 @@ function stuffAfterMain(imagens, imagensJogador, elementos){
     var soldado_width = Math.ceil(c.width/31), soldado_height = Math.ceil(c.height/17);//dimensoes do quadrado que representa o soldado
 
 
-    var nivel = localStorage.getItem("nivel");
-    var n_vidas = localStorage.getItem("vidas");
+    elementos[0][1] = soldado_width*20, elementos[0][2] = soldado_height*15;
+    elementos[1][1] = soldado_width*21, elementos[1][2] = soldado_height*15;
+    elementos[2][1] = soldado_width*22, elementos[2][2] = soldado_height*15;
+    elementos[3][1] = soldado_width*23, elementos[3][2] = soldado_height*15;
+
+    var nivelMax = sessionStorage.nivel;
+    var n_vidas = sessionStorage.vidas;
+    var nivel = sessionStorage.nivel_atual;
 
     nivel = parseInt(nivel);
     n_vidas = parseInt(n_vidas);
@@ -188,7 +192,7 @@ function stuffAfterMain(imagens, imagensJogador, elementos){
     					[0, 10*soldado_height], [0, 2*soldado_height], [0, 5*soldado_height],[0, 5*soldado_height] ];
 
 
-    var dados_niveis = carregaCenarios(soldado_width, soldado_height);
+    var dados_niveis = carregaCenarios(soldado_width, soldado_height, elementos, ctx);
     //array de cenarios
     var cenarios = dados_niveis[0];
     //array de filas
@@ -203,12 +207,13 @@ function stuffAfterMain(imagens, imagensJogador, elementos){
     var cenario = cenarios[nivel-1];
     var mapa_x = cenario.mapa[0].length, mapa_y = cenario.mapa.length;//dimensoes dom mapa
 
-    init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas_niveis[nivel-1], ctxSoldados, ctxJogador, cenario, pos_x, pos_y, imagens, n_vidas, elementos, ctx, imagensJogador);
+    init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas_niveis[nivel-1], ctxSoldados, ctxJogador, cenario, pos_x, pos_y, imagens, n_vidas, elementos, ctx, imagensJogador)
 
 }
 
 function init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas, ctxSoldados, ctxJogador, cenario, pos_x, pos_y, imagens, n_vidas,elementos, ctxBack, imagensJogador){
 
+	console.log(sessionStorage.vidas, sessionStorage.freezer, sessionStorage.speeder, sessionStorage.killer);
 
     //inicializar o jogador
     var jogador = new Jogador(pos_x, pos_y, n_vidas, "teste", 0);
@@ -234,9 +239,8 @@ function init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas, ctxSold
     var flag = 0;
     //var pressed = false;
     document.onkeydown = function (ev) {
-       /* if (pressed) return;
-        pressed = true;
-        */
+       	
+      	
         if(ev.keyCode==37 || ev.keyCode==38 ||ev.keyCode==39 ||ev.keyCode==40) {
             if (flag == 0) {
                 startCrono(jogador, count, cenario.nivel);
@@ -244,13 +248,45 @@ function init(ctx, mapa_x, mapa_y, soldado_width, soldado_height, filas, ctxSold
             }
             jogador.key = ev.keyCode;
         }
-        //keyHandler(ev, cenario, jogador, soldado_width, soldado_height, ctxJogador, imagens, cenario.mapa, ctxSoldados,nivel, ctxBack);
+       
+      	else if(ev.keyCode == 86)//v->vidas
+      	{
+      		if(sessionStorage.vidas <5){
+				jogador.n_vidas++;
+	      		sessionStorage.vidas = parseInt(sessionStorage.vidas) + 1;
+	      		ctx.clearRect(elementos[0][1], elementos[0][2], soldado_width, soldado_height);
+	      		document.getElementById("n_vidas").innerHTML= jogador.n_vidas;
+        	//update
+        }
+      	}
+      	else if(ev.keyCode == 66)//b->velocidade filas
+      	{
+      		if(sessionStorage.speeder == 1){
+	      		cenario.velocidade=+40;
+	      		sessionStorage.speeder=0;
+	      	}
+	      		ctx.clearRect(elementos[1][1], elementos[1][2], soldado_width, soldado_height);
+      	}
+      	else if(ev.keyCode == 78){//n->congela o tempo
+      		if(sessionStorage.freezer == 1){
+	      		stopCrono(tID,jogador, (jogador.tempo.segundos+ jogador.tempo.minutos*60));
+	      		sessionStorage.freezer=0;
+	      		ctx.clearRect(elementos[2][1], elementos[2][2], soldado_width, soldado_height);
+	      	}
+      	}
+
+      	else if(ev.keyCode == 77){//m->remove elementos das filas
+	      		if(sessionStorage.killer == 1){
+	      		sessionStorage.killer=0;
+	      		for(var i=0; i<filas.length;i++){
+	            	filas[i].elimina_ultimo(ctxSoldados, soldado_width, soldado_height);
+	            	filas[i].tamanho--;
+	        	}
+        		ctx.clearRect(elementos[3][1], elementos[3][2], soldado_width, soldado_height);
+        	}
+    	}
     };
-/*
-    document.onkeyup = function () {
-        pressed = false;
-    };
-*/
+
 }
 
 
@@ -269,11 +305,9 @@ function verifica_colisoes(x,y,filas){
     return 0;
 }
 
-function verifica_posicao(jogador,x,y,filas,  soldado_width,soldado_height, ctx, cenario, ctxSoldados) {
-    console.log("testing 1",x,y);
+function verifica_posicao(jogador,x,y,filas,  soldado_width,soldado_height, ctxSoldados, cenario, ctxJogador, elementos, ctxBack) {
     var mapa = cenario.mapa;
     if (y < 0 || x < 0 || y>mapa.length*soldado_height || x>mapa[0].length*soldado_width) {
-        console.log("testing2");
         return 0;
     } else if (mapa[y / soldado_height][x / soldado_width] == 0){
         return 0;
@@ -285,45 +319,48 @@ function verifica_posicao(jogador,x,y,filas,  soldado_width,soldado_height, ctx,
     }
     else if(mapa[y/soldado_height][x/soldado_width] == 3){
         console.log("vida");
-        jogador.n_vidas++;
-        document.getElementById("n_vidas").innerHTML= jogador.n_vidas;
-        ctx.clearRect(x,y,soldado_width, soldado_height);
-        mapa[y/soldado_height][x/soldado_width] = 1;
-        if(cenario.nivel == 1){
-            document.getElementById("text_helper").innerHTML="Como pode reparar, ganhou mais 1 vida";
+        sessionStorage.vidas = parseInt(sessionStorage.vidas) + 1;
+ 		
+        ctxBack.clearRect(x,y,soldado_width, soldado_height);
+        ctxBack.drawImage(elementos[0][0], elementos[0][1], elementos[0][2], soldado_width, soldado_height);
+        
+
+	        if(cenario.nivel == 1){
+        
+            document.getElementById("text_helper").innerHTML="Item que permite ganhar mais 1 vida, para a adquirir pressione a tecla V";
         }
 
     }
 
     else if(mapa[y/soldado_height][x/soldado_width] == 4){
-        console.log("aumenta velocidade filas");
-        cenario.velocidade=+40;
+        console.log("diminui velocidade filas");
+        sessionStorage.speeder=1;
         mapa[y/soldado_height][x/soldado_width] = 1;
-        ctx.clearRect(x,y,soldado_width, soldado_height);
+        ctxBack.clearRect(x,y,soldado_width, soldado_height);
+        ctxBack.drawImage(elementos[1][0], elementos[1][1], elementos[1][2], soldado_width, soldado_height);
         if(cenario.nivel == 1){
-            document.getElementById("text_helper").innerHTML="Como pode reparar, a velocidade das filas diminuiu";
+            document.getElementById("text_helper").innerHTML="Item que diminui a velocidade das filas, para a adquirir pressione a tecla B";
         }
     }
 
     else if(mapa[y/soldado_height][x/soldado_width] == 5){
         console.log("parar o tempo");
-        stopCrono(tID,jogador, (jogador.tempo.segundos+ jogador.tempo.minutos*60));
+        sessionStorage.freezer=1;
         mapa[y/soldado_height][x/soldado_width] = 1;
-        ctx.clearRect(x,y,soldado_width, soldado_height);
+        ctxBack.clearRect(x,y,soldado_width, soldado_height);
+        ctxBack.drawImage(elementos[2][0], elementos[2][1], elementos[2][2], soldado_width, soldado_height);
         if(cenario.nivel == 1){
-            document.getElementById("text_helper").innerHTML="Como pode reparar, congelou os tempos 5 segundos";
+            document.getElementById("text_helper").innerHTML="Item que congela os tempo 5 segundos, para adquirir pressiona a tecla N";
         }
     }
     else if(mapa[y/soldado_height][x/soldado_width] == 6){
         console.log("remove elementos das filas");
-        for(var i=0; i<filas.length;i++){
-            filas[i].elimina_ultimo(ctxSoldados, soldado_width, soldado_height);
-            filas[i].tamanho--;
-        }
+        sessionStorage.killer=1;
         mapa[y/soldado_height][x/soldado_width] = 1;
-        ctx.clearRect(x,y,soldado_width, soldado_height);
+        ctxBack.clearRect(x,y,soldado_width, soldado_height);
+        ctxBack.drawImage(elementos[3][0], elementos[3][1], elementos[3][2], soldado_width, soldado_height);
         if(cenario.nivel == 1){
-            document.getElementById("text_helper").innerHTML="Como pode reparar, o numero de soldados nas filas, dimnuiram 1 unidade";
+            document.getElementById("text_helper").innerHTML="Item que diminui o numero de soldados nas filas uma unidade, para utilizar este item pressione a tecla M";
         }
 
     }
@@ -356,14 +393,19 @@ function  mod(n, m) {
 }
 
 
-function carregaCenarios(soldado_width, soldado_height){
+function carregaCenarios(soldado_width, soldado_height, elementos, ctx){
     var cenarios = [];
     var array_filas = [];
+    var health = 3;
+    var slower = 4;
+    var freezer = 5;
+    var remover = 6;
+    var bool = 'false';
 
     //NIVEL 1
     var mapa = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 1, 1, 1, 6, 1, 1, 1, 0, 1, 1, 3, 1, 0, 0, 0, 1, 4, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 1, 1, 1, icon_verifier(remover,ctx, elementos, soldado_width, soldado_height), 1, 1, 1, 0, 1, 1, icon_verifier(health,ctx, elementos, soldado_width, soldado_height), 1, 0, 0, 0, 1, icon_verifier(slower,ctx, elementos, soldado_width, soldado_height), 1, 1, 1, 1, 1, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
                 [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
                 [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
@@ -373,18 +415,12 @@ function carregaCenarios(soldado_width, soldado_height){
                 [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
                 [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
                 [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [0, 5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+                [0, icon_verifier(freezer,ctx, elementos, soldado_width, soldado_height), 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
                 [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             ];
-    /*var filas = [
-        [[3, 0], [300, 300], [300, 360], [300, 420], [360, 420], [420, 420], [480, 420], [540, 420], [540, 360], [540, 300], [480, 300], [420, 300], [360, 300]],
-
-        [[3, 0], [840, 300], [840, 360], [840, 420], [780, 420], [720, 420], [660, 420], [600, 420], [600, 360], [600, 300], [660, 300], [720, 300], [780, 300]],
-
-    ];*/
 
     var filas = [];
     var velocidade=10;
@@ -418,8 +454,8 @@ function carregaCenarios(soldado_width, soldado_height){
     //NIVEL 2
     mapa = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
-            [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+            [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, icon_verifier(health,ctx, elementos, soldado_width, soldado_height), 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+            [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0],
             [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
             [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
             [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
@@ -429,7 +465,7 @@ function carregaCenarios(soldado_width, soldado_height){
             [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2],
             [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2],
             [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
-            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+            [0, icon_verifier(freezer,ctx, elementos, soldado_width, soldado_height), 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         ];
 
@@ -481,11 +517,11 @@ function carregaCenarios(soldado_width, soldado_height){
         [0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
         [0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
         [0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, icon_verifier(remover,ctx, elementos, soldado_width, soldado_height), 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, icon_verifier(slower,ctx, elementos, soldado_width, soldado_height), 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -540,14 +576,14 @@ function carregaCenarios(soldado_width, soldado_height){
         [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
         [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
         [0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 0],
-        [0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, icon_verifier(freezer,ctx, elementos, soldado_width, soldado_height), 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
         [0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
         [1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
         [0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
-        [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, icon_verifier(slower,ctx, elementos, soldado_width, soldado_height), 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ];
@@ -650,18 +686,15 @@ function carregaCenarios(soldado_width, soldado_height){
 
     //NIVEL 5
 
-
-
-
-    mapa = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+ mapa = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
         [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
         [0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 1, 1, 0, 0, icon_verifier(health,ctx, elementos, soldado_width, soldado_height), 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
         [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0],
         [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, icon_verifier(freezer,ctx, elementos, soldado_width, soldado_height), 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0],
@@ -731,18 +764,18 @@ function carregaCenarios(soldado_width, soldado_height){
 
 
 	//NIVEL 6
-     mapa = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      mapa = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
         [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-        [0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, icon_verifier(remover,ctx, elementos, soldado_width, soldado_height), 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
         [0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
         [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
         [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, icon_verifier(health,ctx, elementos, soldado_width, soldado_height), 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
         [0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -813,7 +846,7 @@ function carregaCenarios(soldado_width, soldado_height){
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 2, 2, 1, icon_verifier(slower,ctx, elementos, soldado_width, soldado_height), 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 2, 2, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
@@ -1116,7 +1149,7 @@ function carregaCenarios(soldado_width, soldado_height){
         [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0],
         [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, icon_verifier(remover,ctx, elementos, soldado_width, soldado_height), 1, 1, 1, 1, 0, 0],
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
         [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0],
         [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
@@ -1124,10 +1157,11 @@ function carregaCenarios(soldado_width, soldado_height){
         [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
         [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
         [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
-        [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, icon_verifier(health,ctx, elementos, soldado_width, soldado_height), 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ];
+
 
     velocidade=5;
     filas = [];
@@ -1232,7 +1266,7 @@ function carregaCenarios(soldado_width, soldado_height){
     //NIVEL 10
     mapa = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0],
         [0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0],
         [0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
@@ -1537,4 +1571,37 @@ function right_left(un, width, pos_x, pos_y, array){
     }
     return [pos_x, pos_y];
 
+}
+
+
+function icon_verifier( value, ctx, elementos, soldado_width, soldado_height){
+    
+    if(value == 3){
+    	if(sessionStorage.vidas ==5){
+    		return 1;
+    		ctx.drawImage(elementos[0][0], elementos[0][1], elementos[0][2], soldado_width, soldado_height);
+    	}
+    }
+    else if(value == 4){
+    	if(sessionStorage.speeder == 1){
+    		ctx.drawImage(elementos[1][0], elementos[1][1], elementos[1][2], soldado_width, soldado_height);
+    		return 1;
+    	}
+    }
+    else if(value == 5){
+    	if(sessionStorage.freezer == 1){
+    		ctx.drawImage(elementos[2][0], elementos[2][1], elementos[2][2], soldado_width, soldado_height);
+    		return 1;
+    	}
+    	
+    }
+    else if(value == 6){
+    	if(sessionStorage.killer == 1){
+    		ctx.drawImage(elementos[3][0], elementos[3][1], elementos[3][2], soldado_width, soldado_height);
+    		return 1;
+    	}
+    	
+    }
+
+    return value;
 }
