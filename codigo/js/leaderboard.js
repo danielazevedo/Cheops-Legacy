@@ -28,7 +28,7 @@ function main(){
 function  carrega_leaderboard(){
 	var pontuacoes,dados;
 	var count=0;
-	for(var i=0;i<10;i++){
+	for(var i=1;i<=10;i++){
 		pontuacoes=localStorage.getItem("lvl"+i);
 		if(pontuacoes!=null){
 			dados=pontuacoes.split(" ");
